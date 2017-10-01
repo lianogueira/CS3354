@@ -8,14 +8,14 @@ package shippingstore;
  *
  * @author Junye Wen
  */
-public class PackageOrder {
+public class Package {
 
-    private final String trackingnumber;
-    private final String type;
-    private final String specification;
-    private final String mailingclass;
-    private final float weight;
-    private final int volume;
+    private String trackingnumber;
+    private String type;
+    private String specification;
+    private String mailingclass;
+    private float weight;
+    private int volume;
 
     /**
      * This constructor initializes the package order object. The constructor provides no
@@ -39,7 +39,10 @@ public class PackageOrder {
      * cubic inches, calculated as Width x Length x Height
      *
      */
-    public PackageOrder(String trackingnumber, String type, String specification, String mailingclass, float weight, int volume) {
+
+    public Package() {}
+
+    public Package(String trackingnumber, String type, String specification, String mailingclass, float weight, int volume) {
         this.trackingnumber = trackingnumber;
         this.type = type;
         this.specification = specification;
@@ -111,18 +114,18 @@ public class PackageOrder {
     @Override
     public String toString() {
         return trackingnumber + " " + type + " " + specification + " " + mailingclass + " "
-        		+ String.format("%.2f", weight) + " " + volume + "\n";
+                + String.format("%.2f", weight) + " " + volume + "\n";
     }
 
     /**
      * This method provides a way to compare two package order objects.
      *
-     * @param c a <b><CODE>PackageOrder</CODE></b> object that is used to compare to
+     * @param c a <b><CODE>Package</CODE></b> object that is used to compare to
      * <b><CODE>this</CODE></b> package order. Two orders are equal if their TrackingNumber is the
      * same.
      * @return the <CODE>boolean</CODE> value of the comparison.
      */
-    public boolean equals(PackageOrder c) {
+    public boolean equals(Package c) {
         return c.getTrackingNumber().equals(this.trackingnumber);
     }
 

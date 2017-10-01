@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * This is the main class of the ShippingStore database manager. It provides a
+ * This is the main class of the PackageDatabase database manager. It provides a
  * console for a user to use the 5 main commands.
  *
  * @author Junye Wen
@@ -15,7 +15,7 @@ public class MainApp {
      * This method will begin the user interface console. Main uses a loop to
      * continue doing commands until the user types '6'. A lot of user input
      * validation is done in the loop. At least enough to allow the interface
-     * with ShippingStore to be safe.
+     * with PackageDatabase to be safe.
      *
      * @param args this program expects no command line arguments
      * @throws Exception
@@ -23,7 +23,7 @@ public class MainApp {
     public static void main(String[] args) throws Exception {
         Scanner in = new Scanner(System.in);
 
-        ShippingStore shippingstore = new ShippingStore();
+        PackageDatabase PackageDatabase = new PackageDatabase();
 
         String welcomeMessage = "\nWelcome to the Shipping Store database. Choose one of the following functions:\n\n"
                 + "\t1. Show all existing package orders in the database\n"
@@ -46,7 +46,7 @@ public class MainApp {
 
             switch (selection) {
                 case '1':
-                    shippingstore.showPackageOrders();
+                    PackageDatabase.showPackages ();
                     break;
                 case '2':
                     System.out.println("\nPlease type description of package with the following pattern:\n"
@@ -61,20 +61,20 @@ public class MainApp {
                         break;
                     }
 
-                    shippingstore.addOrder(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]);
+                    PackageDatabase.addOrder(temp[0], temp[1], temp[2], temp[3], temp[4], temp[5]);
                     break;
                 case '3':
-                    shippingstore.showPackageOrders();
+                    PackageDatabase.showPackages();
 
                     System.out.println("\nPlease enter the tracking # of the package order to delete from the database.\n");
                     String orderToDelete = in.nextLine();
-                    shippingstore.removeOrder(orderToDelete);
+                    PackageDatabase.removeOrder(orderToDelete);
                     break;
                 case '4':
                     System.out.println("\nEnter the Tracking # of the order you wish to see.\n");
                     String trackingNum = in.next();
                     in.nextLine();
-                    shippingstore.searchPackageOrder(trackingNum);
+                    PackageDatabase.searchPackage(trackingNum);
                     break;
                 case '5':
                     float high = 0;
@@ -86,7 +86,7 @@ public class MainApp {
                     high = in.nextFloat();
                     in.nextLine();
 
-                    shippingstore.showPackageOrdersRange(low, high);
+                    PackageDatabase.showPackagesRange(low, high);
                     break;
                 case 'h':
                     System.out.println(welcomeMessage);
@@ -104,7 +104,7 @@ public class MainApp {
         }
 
         in.close();
-        shippingstore.flush();
+        PackageDatabase.flush();
 
         System.out.println("Done!");
 
