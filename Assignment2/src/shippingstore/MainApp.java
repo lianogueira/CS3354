@@ -31,7 +31,11 @@ public class MainApp {
                 + "\t3. Delete a package order from a database.\n"
                 + "\t4. Search for a package order (given its Tracking #).\n"
                 + "\t5. Show a list of orders within a given weight range.\n"
-                + "\t6. Exit program.\n";
+                + "\t6. Add a new user to the database."
+                + "\t7. Update user info(given their id)."
+                + "\t8. Complete a shipping transaction."
+                + "\t9. Show completed shpping transactions."
+                + "\t10. Exit program.\n";
 
         System.out.println(welcomeMessage);
 
@@ -75,13 +79,13 @@ public class MainApp {
                 case '5':
                     float high = 0;
                     float low = 0;
-                    
+
                     System.out.println("\nEnter lower-bound weight.\n");
                     low = in.nextFloat();
                     System.out.println("\nEnter upper-bound weight.\n");
                     high = in.nextFloat();
                     in.nextLine();
-                    
+
                     shippingstore.showPackageOrdersRange(low, high);
                     break;
                 case 'h':
@@ -101,7 +105,7 @@ public class MainApp {
 
         in.close();
         shippingstore.flush();
-        
+
         System.out.println("Done!");
 
     }
