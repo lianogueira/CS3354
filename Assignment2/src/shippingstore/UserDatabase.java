@@ -1,49 +1,97 @@
 package shippingstore;
-
+import java.io.*;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.io.Serializable;
 
-public class UserDatabase{
+public class UserDatabase implements Serializable {
 
-  private final String userID;
-  private final String firstName;
-  private final String lastName;
-
-  /**
-   * This constructor initializes the user database object. The constructor provides no
-   * user input validation. That should be handled by the class that creates a
-   * package order object.
-   *
-   * @param userID a <b><CODE>String</CODE></b> that represents the tracking number
-   *
-   * @param firstName a <b><CODE>String</CODE></b> that represents the type.
-   *
-   * @param lastName a <b><CODE>String</CODE></b> that represents the specification.
-   *
-   *
-   */
-  public  UserDatabase(String userID, String firstName, String lastName){
-    this.userID = userID; 
-    this.firstName = firstName;
-    this.lastName = lastName;
-  }
-
-  public String getUserID(){
-    return userID;
-  }
-
-  public String getFirstName(){
-    return firstName;
-  }
-  public String getLastName(){
-    return lastName;
-  }
+	Scanner in = new Scanner(System.in);
+	private ArrayList<UserList> ListOfUsers;
 
 
+	public void displayUsers(/*ArrayList<UserList> users*/) {
+		for(UserList i : ListOfUsers) {
+			if( i instanceof Employee) {
+
+				   System.out.format("|%1$-15s| %2$-15s| %3$-15s| %4$-15s|%5-15s|,%6-15s|",
+				    (((Employee)i).getFirstName()),
+					((Employee)i).getLastName(),
+					((Employee)i).getUserID(),
+					((Employee)i).getSocial(),
+					((Employee)i).getDirectDepoist(),
+					((Employee)i).getSalary());
+
+
+			} else if(i instanceof Customer) {
+				System.out.format("|%1$-15s| %2$-15s| %3$-15s| %4$-15s|%5-15s|",
+						((Customer)i).getFirstName(),
+						((Customer)i).getLastName(),
+						((Customer)i).getUserID(),
+						((Customer)i).getAddress(),
+						((Customer)i).getPhoneNumber());
+
+			}else {
+				System.out.println("There are currently no users to display.");
+			}
+		}
+
+	}
+
+	public void addUser(String first, String last) {
+
+		char choice;
+
+		System.out.println("Are you a customer or employe? Answer c for customer or e for employee");
+		choice = in.next().charAt(0);
+		in.nextLine();
+
+		int id = (int)(Math.random());
+		System.out.println("Your user ID is: "+ id);
+
+		switch(choice) {
+		case 'c':
+		case 'C':
+			System.out.println("Please enter address:");
+			String address = in.nextLine();
+
+			System.out.println("Please enter phone number:");
+			String phone = in.nextLine();
+			ListOfUsers.add(new Customer(address, phone,id,first,last));
+			System.out.println("User added.");
+			break;
+		case 'e':
+		case 'E':
+			System.out.println("Please enter your Social Security number:");
+			int social= in.nextInt();
+			in.nextLine();
+
+			System.out.println("Please enter Direct Deposit number:");
+			int directDeposit = in.nextInt();
+			in.nextLine();
+
+			System.out.println("Please enter Salary:");
+			float salary = in.nextFloat();
+			in.nextLine();
+
+			ListOfUsers.add(new Employee(social, directDeposit,salary, id,first,last));
+			System.out.println("User added.");
+			break;
+		default:
+			System.out.println("Invalid Option~ Unable to add user.");
+
+
+		}
+
+}
+
+	public void updateUser() {
+
+	}
 
 
 }

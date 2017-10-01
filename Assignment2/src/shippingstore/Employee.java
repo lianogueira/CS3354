@@ -1,13 +1,30 @@
 package shippingstore;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
+public class Employee extends UserList{
 
-public class Employee extends UserDatabase{
+	private final int social;
+	private final int directDeposit;
+	private final float salary;
+
+
+	public Employee(int social, int directDeposit, float salary,int userID, String first, String last) {
+		super(userID, first,last);
+		this.directDeposit = directDeposit;
+		this.social = social;
+		this.salary = salary;
+	}
+
+	public int getSocial() {
+		return social;
+	}
+
+	public int getDirectDepoist() {
+		return directDeposit;
+	}
+
+	public float getSalary() {
+		return salary;
+	}
 
 
 }
