@@ -9,7 +9,8 @@ public class PackageDrum extends Package{
     public PackageDrum() {
     }
 
-    public PackageDrum(String material, int diameter) {
+    public PackageDrum(String trackingNumber, String type, String specification, String mailingClass, String material, int diameter) {
+        super(trackingNumber, type, specification, mailingClass);
         this.material = material;
         this.diameter = diameter;
     }
@@ -21,5 +22,13 @@ public class PackageDrum extends Package{
     public int getDiameter() {
         return diameter;
     }
+
+
+    @Override
+    public String toString() {
+        return getTrackingNumber() + " " + getType() + " " + getSpecification() + " " + getMailingClass() + " "
+                + material + " " + diameter + "\n";
+    }
+
 
 }

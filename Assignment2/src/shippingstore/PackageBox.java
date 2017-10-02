@@ -3,22 +3,29 @@ package shippingstore;
 public class PackageBox extends Package{
 
     private int largestDimension;
-    private int width;
+    private int volume;
 
     public PackageBox() {
     }
 
-    public PackageBox(int largestDimension, int width) {
+    public PackageBox(String trackingNumber, String type, String specification, String mailingClass, int largestDimension, int volume) {
+        super(trackingNumber, type, specification, mailingClass);
         this.largestDimension = largestDimension;
-        this.width = width;
+        this.volume = volume;
     }
 
     public int getLargestDimension() {
         return largestDimension;
     }
 
-    public int getWidth() {
-        return width;
+    public int getVolume() {
+        return volume;
+    }
+
+    @Override
+    public String toString() {
+        return getTrackingNumber() + " " + getType() + " " + getSpecification() + " " + getMailingClass() + " "
+                +  largestDimension + " " + volume + "\n";
     }
 
 }
