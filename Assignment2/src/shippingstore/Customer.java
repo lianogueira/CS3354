@@ -1,13 +1,22 @@
 package shippingstore;
 
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Scanner;
+public class Customer extends UserList {
 
-public class Customer extends UserDatabase{
+	private final String address;
+	private final String phoneNumber;
+
+	public Customer (String address, String phoneNumber,int userID, String first, String last){
+		super(userID, first,last);
+		this.address = address;
+		this.phoneNumber = phoneNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
 
 
 }
