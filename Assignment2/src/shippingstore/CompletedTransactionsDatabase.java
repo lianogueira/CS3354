@@ -3,18 +3,29 @@ package shippingstore;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.CompletionException;
+import java.text.*;
 
-import static java.lang.System.out;
-
-
+/**
+ * Handles a list of objects of the type CompletedTransaction <br><br>
+ * <b>Functionalities:</b> <br>
+ * Read list of completed transactions from File,<br>
+ * Save list of completed transactions in File,<br>
+ * Complete a transaction,<br>
+ * Show Completed transaction<br>
+ *
+ * @author Tyler Hooks and Lia Nogueira de Moura
+ * @version 10/02/2017
+ */
 public class CompletedTransactionsDatabase implements Serializable {
 
     private ArrayList<CompletedTransaction> transactionsList;
     private String DB_FILE_NAME = "TransactionDB.txt";
 
 
-    //constructor
+    /**
+     * This constructor initializes the ArrayList with the data from file
+     * @throws Exception (throws Exception)
+     */
     public CompletedTransactionsDatabase() throws Exception {
         transactionsList = new ArrayList<>();
 
@@ -30,47 +41,61 @@ public class CompletedTransactionsDatabase implements Serializable {
     }
 
 
-    //Completes transactions. Add transaction to list
-    public void completeTransaction (Integer custumerID, String trackingNumber, String shippingDate, String deliveryDate, float costShipping, Integer employeeID, PackageDatabase packages)
+    /**
+     * Adds new CompletedTransaction to the list. Accepts parameters for the content of the transaction<br><br>
+     * Removes package from package list after adding to the completed transactions list
+     *
+     * @param customerID  Customer ID of completed transaction
+     * @param trackingNumber Tracking Number of completed transaction
+     * @param shippingDate Shipping Date of completed transaction
+     * @param deliveryDate Delivery Date of completed transaction
+     * @param costShipping Cost Shipping of completed transaction
+     * @param employeeID Employee ID of completed transaction
+     * @param packages package list objects so we can remove a package from
+     */
+    public void completeTransaction (Integer customerID, String trackingNumber, Date shippingDate, Date deliveryDate, float costShipping, Integer employeeID, PackageDatabase packages)
     {
-
-        transactionsList.add(new CompletedTransaction(custumerID,trackingNumber,shippingDate,deliveryDate, costShipping, employeeID));
-        packages.removeOrder(trackingNumber);
+        transactionsList.add(new CompletedTransaction(customerID,trackingNumber,shippingDate,deliveryDate, costShipping, employeeID));
+        packages.removePackage(trackingNumber);
 
     }
 
 
     /**
-     * Private method used as an auxiliary method to display a given ArrayList
-     * of package orders in a formatted manner.
-     *
+     * Displays list of all completed transactions <br><br>
      *
      */
     public void showTransactions() {
 
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
+        //sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
-        System.out.println(" --------------------------------------------------------------------------------------------- ");
-        System.out.println("| Customer # | Tracking # | Shipping Date | Delivery Date  | Cost Of Shipping | Employee ID   |");
-        System.out.println(" --------------------------------------------------------------------------------------------- ");
+
+        System.out.println(" ------------------------------------------------------------------------------------------------- ");
+        System.out.println("| Customer # | Tracking # | Shipping Date   | Delivery Date    | Cost Of Shipping | Employee ID   |");
+        System.out.println(" ------------------------------------------------------------------------------------------------- ");
 
         for (CompletedTransaction i : transactionsList) {
 
-                System.out.println(String.format("| %-11s| %-11s| %-14s| %-15s| %-17s| %-14s|",
+                System.out.println(String.format("| %-11s| %-11s| %-16s| %-17s| %-17s| %-14s|",
                         i.getCostShipping(),
                         i.getTrackingNumber(),
-                        i.getShippingDate(),
-                        i.getDeliveryDate(),
+                        sdf.format(i.getShippingDate()),
+                        sdf.format(i.getDeliveryDate()),
                         String.format("%.2f", i.getCostShipping()),
                         i.getEmployeeID()));
 
         }
 
-        System.out.println(" --------------------------------------------------------------------------------------------- \n");
+        System.out.println(" ------------------------------------------------------------------------------------------------- \n");
 
     }
 
 
-    //End
+    /**
+     * This method writes the data into file
+     * @throws Exception (throws Exception)
+     */
     public void flush() throws Exception {
 
         try {

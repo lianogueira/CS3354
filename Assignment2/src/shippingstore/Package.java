@@ -1,107 +1,95 @@
 package shippingstore;
-
 import java.io.Serializable;
 
-/**
- * This class is a very simple representation of a package order. There are only getter
- * methods and no setter methods and as a result a package order cannot be mutated once
- * initialized. A package order object can also call the two override methods
- * <CODE>toString()</CODE> and <CODE>equals()</CODE>
- *
- * @author Junye Wen
- */
-public class Package implements Serializable  {
 
-    private String trackingnumber;
+/**
+ * Class to describe the information of a package <br><br>
+ * <b>Data: </b><br>
+ * Tracking Number<br>
+ * Type<br>
+ * Specification<br>
+ * MailingClass<br>
+ *
+ * @author Tyler Hooks and Lia Nogueira de Moura
+ * @version 10/02/2017
+ */
+public class Package implements Serializable, Comparable<Package>{
+
+    private String trackingNumber;
     private String type;
     private String specification;
-    private String mailingclass;
+    private String mailingClass;
 
-    /**
-     * This constructor initializes the package order object. The constructor provides no
-     * user input validation. That should be handled by the class that creates a
-     * package order object.
-     *
-     * @param trackingnumber a <b><CODE>String</CODE></b> that represents the tracking number
-     *
-     * @param type a <b><CODE>String</CODE></b> that represents the type.
-     * Types: Postcard, Letter, Envelope, Packet, Box, Crate, Drum, Roll, Tube.
-     *
-     * @param specification a <b><CODE>String</CODE></b> that represents the specification.
-     * Specification: Fragile, Books, Catalogs, Do-not-Bend, N/A - one per package
-     *
-     * @param mailingclass a <b><CODE>String</CODE></b> that represents the mailing class
-     * Mailing class: First-Class, Priority, Retail, Ground, Metro.
-     *
-     */
-
+    /** Default constructor */
     public Package() {}
 
-    public Package(String trackingnumber, String type, String specification, String mailingclass) {
-        this.trackingnumber = trackingnumber;
+    /** Constructs a Package object. Initializes data using input
+     *
+     * @param trackingNumber tracking number to initialize the package
+     * @param type Type to initialize the package
+     * @param specification Specification to initialize the package
+     * @param mailingClass Mailing Class to initialize the package
+     * */
+    public Package(String trackingNumber, String type, String specification, String mailingClass) {
+        this.trackingNumber = trackingNumber;
         this.type = type;
         this.specification = specification;
-        this.mailingclass = mailingclass;
+        this.mailingClass = mailingClass;
     }
 
-    /**
-     * This method returns the package order's tracking number.
-     *
-     * @return a <b><CODE>String</CODE></b> that is the tracking number of the package order.
+
+    /** Get Tracking Number
+     * @return Package Tracking number
      */
     public String getTrackingNumber() {
-        return trackingnumber;
+        return trackingNumber;
     }
 
-    /**
-     * This method returns the package order's type.
-     *
-     * @return a <b><CODE>String</CODE></b> that is the package order's type.
+
+    /** Get type
+     * @return Package Type
      */
     public String getType() {
         return type;
     }
 
-    /**
-     * This method returns the package order's specification.
-     *
-     * @return a <b><CODE>String</CODE></b> that is the package order's specification.
+
+    /** Get specification
+     * @return Package Specification
      */
     public String getSpecification() {
         return specification;
     }
 
-    /**
-     * This method returns the package order's mailing class.
-     *
-     * @return a <b><CODE>string</CODE></b> that is the package order's mailing class
+    /** Get Mailing Class
+     * @return Package Mailing Class
      */
     public String getMailingClass() {
-        return mailingclass;
+        return mailingClass;
     }
 
 
     /**
-     * This method returns the package order's fields as a string representation.
-     *
-     * @return a <b><CODE>String</CODE></b> that lists the fields of the package order
-     * object delineated by a space and in the same order as the constructor
+     * Overwrites compareTo method. Comparison is based on tracking # <br>
+     * Method created to be used in the sort of an ArrayList
      */
     @Override
-    public String toString() {
-        return trackingnumber + " " + type + " " + specification + " " + mailingclass + "\n";
+    public int compareTo(Package c) {
+        String rhsName = ((Package)c).getTrackingNumber();
+        return trackingNumber.compareTo(rhsName);
     }
 
     /**
-     * This method provides a way to compare two package order objects.
-     *
-     * @param c a <b><CODE>Package</CODE></b> object that is used to compare to
-     * <b><CODE>this</CODE></b> package order. Two orders are equal if their TrackingNumber is the
-     * same.
-     * @return the <CODE>boolean</CODE> value of the comparison.
+     * Prints out the a line with package variables <br>
+     * Order of printing: Tracking #, Type, Specification, Class
+     * @param format format for printing the values. e.g. | %-11s| %-8s| %-17s| %-14s| %-26s| %-30s|
      */
-    public boolean equals(Package c) {
-        return c.getTrackingNumber().equals(this.trackingnumber);
+    public void print(String format){
+        System.out.println(String.format(format,
+                trackingNumber,
+                type,
+                specification,
+                mailingClass, "", ""));
     }
 
 }
