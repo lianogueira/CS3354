@@ -105,12 +105,14 @@ public class MainApp {
                     String first = in.nextLine();
                     out.println("\n Please enter a last name.\n");
                     String last = in.nextLine();
-                    //userdatabase.addUser(first, last);
+                    userdatabase.addUser(first, last);
                     break;
 
                 case "7":
-
-                    break;
+                  System.out.println("\n Please enter user ID:" );
+                  int userID = in.nextInt();
+                  userdatabase.updateUser(userID);
+                  break;
 
                 case "8":
 
@@ -214,4 +216,3 @@ public class MainApp {
 
     }
 }
-
