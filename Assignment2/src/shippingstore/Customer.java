@@ -1,9 +1,21 @@
 package shippingstore;
 
+/**
+ * Class to describe the information of Customer (Extends UserList) <br><br>
+ * <b>Data: </b><br>
+ * User ID <br>
+ * Social Security<br>
+ * Salary<br>
+ * Direct Deposit<br>
+ *
+ * @author Tyler Hooks and Lia Nogueira de Moura
+ * @version 10/03/2017
+ */
+
 public class Customer extends UserList {
 
-	private final String address;
-	private final String phoneNumber;
+	private  String address;
+	private  String phoneNumber;
 
 	public Customer (String address, String phoneNumber,int userID, String first, String last){
 		super(userID, first,last);

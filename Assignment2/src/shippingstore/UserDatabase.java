@@ -1,13 +1,22 @@
 package shippingstore;
+
 import java.io.*;
 import java.io.IOException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 import java.io.Serializable;
+
+/**
+ *  This class is used to represent a database interface for a list of
+ *  <CODE>User List</CODE>'s. It displays,adds, and updates a user's
+ *  information.
+ *
+ * @author Tyler Hooks and Lia Nogueira de Moura
+ * @version 10/03/2017
+ */
 
 public class UserDatabase implements Serializable {
 
@@ -19,27 +28,35 @@ public class UserDatabase implements Serializable {
 		ListOfUsers = new ArrayList<>();
 	}
 
-	public void displayUsers(/*ArrayList<UserList> users*/) {
-		for(UserList i : ListOfUsers) {
-			if( i instanceof Employee) {
+	public void displayUsers() {
 
-				   System.out.println(
-				    (((Employee)i).getFirstName()+
-					((Employee)i).getLastName()+
-					((Employee)i).getUserID()+
-					((Employee)i).getSocial()+
-					((Employee)i).getDirectDepoist()+
-					((Employee)i).getSalary()));
+		for(UserList i : ListOfUsers) {
+		if( i instanceof Employee) {
+				System.out.println("EMPLOYEE");
+				/*System.out.println(" ------------------------------------------------------------------------------------------------- ");
+			    System.out.println("| First Name  | Last Name   | User ID    | Social Security #   |Direct Deposit|Salary |");
+			    System.out.println(" ------------------------------------------------------------------------------------------------- ");*/
+				//I wasn't sure if we wanted to add this or not, if so, I can come back and format it. I just wasn't sure what she was expecting
+
+				System.out.println(String.format("| %-11s| %-11s| %-16s| %-17s| %-17s| %-14s|",
+				    ((Employee)i).getFirstName(),
+					((Employee)i).getLastName(),
+					((Employee)i).getUserID(),
+					((Employee)i).getSocial(),
+					((Employee)i).getDirectDepoist(),
+					((Employee)i).getSalary(),"EMPLOYEE", "/n"
+					));
 
 
 			} else if(i instanceof Customer) {
-				//System.out.format("|%1$-15s| %2$-15s| %3$-15s| %4$-15s|%5-15s|",
-				System.out.println(
-						((Customer)i).getFirstName()+
-						((Customer)i).getLastName()+
-						((Customer)i).getUserID()+
-						((Customer)i).getAddress()+
-						((Customer)i).getPhoneNumber());
+				System.out.println("CUSTOMER");
+				System.out.format(String.format("| %-11s| %-11s| %-16s| %-17s| %-17s|",
+						((Customer)i).getFirstName(),
+						((Customer)i).getLastName(),
+						((Customer)i).getUserID(),
+						((Customer)i).getAddress(),
+						((Customer)i).getPhoneNumber(),"CUSTOMER", "/n"
+						));
 
 			}else {
 				System.out.println("There are currently no users to display.");

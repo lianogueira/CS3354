@@ -1,10 +1,22 @@
 package shippingstore;
 
+/**
+ * Class to describe the information of Employee (Extends UserList) <br><br>
+ * <b>Data: </b><br>
+ * User ID <br>
+ * Social Security<br>
+ * Salary<br>
+ * Direct Deposit<br>
+ *
+ * @author Tyler Hooks and Lia Nogueira de Moura
+ * @version 10/03/2017
+ */
+
 public class Employee extends UserList{
 
-	private final int social;
-	private final int directDeposit;
-	private final float salary;
+	private  int social;
+	private  int directDeposit;
+	private  float salary;
 
 
 	public Employee(int social, int directDeposit, float salary,int userID, String first, String last) {
