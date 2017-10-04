@@ -1,6 +1,6 @@
 package shippingstore;
 
-import java.util.InputMismatchException;
+
 import java.util.Scanner;
 import java.util.Date;
 import java.text.*;
@@ -78,11 +78,12 @@ public class MainApp {
                     PackageDB.showPackages();
                     break;
                 case "2":
-                    PackageDB.addNewPackageWithUserInput();
+
+                    PackageDB.addNewPackageWithUserInput(CompletedTransactionDB);
                     break;
                 case "3":
                     PackageDB.showPackages();
-                    out.println("\nPlease enter the tracking # of the package order to delete from the database.\n");
+                    out.println("\n Please enter the tracking # of the package order to delete from the database: ");
                     String orderToDelete = in.nextLine();
                     PackageDB.removePackage(orderToDelete);
                     break;
@@ -96,20 +97,21 @@ public class MainApp {
 
                 case "5":
 
-                    //userdatabase.displayUsers();
+                    userdatabase.displayUsers();
                     break;
 
                 case "6":
 
-                    out.println("\n Please enter a first name.\n");
+                    out.print("\n Please enter a first name: ");
                     String first = in.nextLine();
-                    out.println("\n Please enter a last name.\n");
+                    out.print("\n Please enter a last name: ");
                     String last = in.nextLine();
                     userdatabase.addUser(first, last);
                     break;
 
                 case "7":
-                  System.out.println("\n Please enter user ID:" );
+
+                  System.out.println(" Please enter user ID: " );
                   int userID = in.nextInt();
                   userdatabase.updateUser(userID);
                   break;
@@ -120,8 +122,21 @@ public class MainApp {
 
                     //Get customerID type from user
                     out.print("\n Enter customer ID: ");
+                    while (!in.hasNextInt()) {
+                        out.println("\n Error: Invalid Customer ID");
+                        out.print("\n Enter customer ID: ");
+                        in.next();
+                    }
                     Integer customerID=in.nextInt();
                     in.nextLine();
+                    if (userdatabase.findUserType(customerID) == "unknown") {
+                        out.print("\n Customer does not exists. Please create the customer first.");
+                        break;
+                    }
+                    else if (userdatabase.findUserType(customerID) == "Employee") {
+                        out.print("\n This User id is for an employee. Please enter the customer ID.");
+                        break;
+                    }
 
 
                     //Get tracking Number from user
@@ -178,10 +193,23 @@ public class MainApp {
                     in.nextLine();
 
 
-                    //Get employeeID type from user
-                    out.print("\n Enter employee ID: ");
+                    //Get EmployeeID type from user
+                    out.print("\n Enter Employee ID: ");
+                    while (!in.hasNextInt()) {
+                        out.println("\n Error: Invalid Employee ID");
+                        out.print("\n Enter Employee ID: ");
+                        in.next();
+                    }
                     Integer employeeID=in.nextInt();
                     in.nextLine();
+                    if (userdatabase.findUserType(employeeID) == "unknown") {
+                        out.print("\n Employee does not exists. Please create the employee first.");
+                        break;
+                    }
+                    else if (userdatabase.findUserType(employeeID) == "Customer") {
+                        out.print("\n This User id is for a customer. Please enter an employee ID or create a new user.");
+                        break;
+                    }
 
 
                     //add new package with the information given by the user
@@ -208,6 +236,7 @@ public class MainApp {
 
         in.close();
         PackageDB.flush();
+        userdatabase.flush();
         CompletedTransactionDB.flush();
 
         out.print("\n\n Thank you!");

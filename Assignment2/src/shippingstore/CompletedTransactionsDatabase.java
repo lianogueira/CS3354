@@ -71,14 +71,14 @@ public class CompletedTransactionsDatabase implements Serializable {
         //sdf = new SimpleDateFormat("EEE, MM/dd/yyyy");
 
 
-        System.out.println(" ------------------------------------------------------------------------------------------------- ");
-        System.out.println("| Customer # | Tracking # | Shipping Date   | Delivery Date    | Cost Of Shipping | Employee ID   |");
-        System.out.println(" ------------------------------------------------------------------------------------------------- ");
+        System.out.println(" -------------------------------------------------------------------------------------------------- ");
+        System.out.println("| Customer ID | Tracking # | Shipping Date   | Delivery Date    | Cost Of Shipping | Employee ID   |");
+        System.out.println(" -------------------------------------------------------------------------------------------------- ");
 
         for (CompletedTransaction i : transactionsList) {
 
-                System.out.println(String.format("| %-11s| %-11s| %-16s| %-17s| %-17s| %-14s|",
-                        i.getCostShipping(),
+                System.out.println(String.format("| %-12s| %-11s| %-16s| %-17s| %-17s| %-14s|",
+                        i.getCustomerID(),
                         i.getTrackingNumber(),
                         sdf.format(i.getShippingDate()),
                         sdf.format(i.getDeliveryDate()),
@@ -112,5 +112,29 @@ public class CompletedTransactionsDatabase implements Serializable {
 
     }
 
+
+    /**
+     * This method can be used to find a package in the Arraylist of completed transaction
+     *
+     * @param trackingNumber a <CODE>String</CODE> that represents the tracking number
+     * of the package that to be searched for.
+     * @return the <CODE>int</CODE> index of the package in the Arraylist of packages,
+     * or -1 if the search failed.
+     */
+    public int findPackage(String trackingNumber) {
+
+        int index = -1;
+
+        for (int i = 0; i < transactionsList.size(); i++) {
+            String temp = transactionsList.get(i).getTrackingNumber();
+
+            if (trackingNumber.equalsIgnoreCase(temp)) {
+                index = i;
+                break;
+            }
+        }
+
+        return index;
+    }
 
 }

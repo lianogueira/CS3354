@@ -182,7 +182,7 @@ public class PackageDatabase implements Serializable {
 
         //Quit if package already in database
         if (this.findPackage(trackingNumberInput) != -1) {
-            System.out.println(" Package already exists in database.");
+            System.out.println("\n Package already exists in database. Unable to add user");
             return;
         }
 
@@ -278,7 +278,6 @@ public class PackageDatabase implements Serializable {
         }
         else {
             packageList.remove(packageID);
-            System.out.println("\n Action successful. Package has been removed from the database.\n");
         }
     }
 
@@ -288,7 +287,7 @@ public class PackageDatabase implements Serializable {
      * Gets user input and creates a new package <br>
      *
      */
-    public void addNewPackageWithUserInput(){
+    public void addNewPackageWithUserInput(CompletedTransactionsDatabase cTransaction){
 
         Scanner in = new Scanner(System.in);
         Integer height= 0;
@@ -301,15 +300,6 @@ public class PackageDatabase implements Serializable {
         Integer diameter=0;
 
 
-        //Get tracking Number from user and validates input
-        out.print("\n Enter tracking Number:");
-        String trackingNumberInput=in.nextLine();
-        while (trackingNumberInput.length() != 5) {
-            out.println("\n Error: Invalid tracking number. Tracking number must have 5 characters.");
-            out.print(" Enter tracking Number:");
-            trackingNumberInput=in.nextLine();
-        }
-
         //Get package type from user and validates input
         out.print("\n Enter type (Options: 1-Envelope, 2-Box, 3-Crate, 4-Drum): ");
         while (!in.hasNext("[1234]")) {
@@ -319,6 +309,19 @@ public class PackageDatabase implements Serializable {
         }
         Integer typeInput=in.nextInt();
         in.nextLine();
+
+
+        //Get tracking Number from user and validates input
+        out.print("\n Enter tracking Number:");
+        String trackingNumberInput=in.nextLine();
+        while (trackingNumberInput.length() != 5 || cTransaction.findPackage(trackingNumberInput) != -1) {
+            if (trackingNumberInput.length() != 5)
+                out.println("\n Error: Invalid tracking number. Tracking number must have 5 characters.");
+            else
+                out.println("\n Package already exists in the completed transactions database");
+            out.print(" Enter tracking Number:");
+            trackingNumberInput=in.nextLine();
+        }
 
 
         //Get specification from user and validates input

@@ -1,10 +1,12 @@
 package shippingstore;
 
-public class UserList {
+import java.io.Serializable;
+
+public class UserList implements Serializable {
 	
-	protected final int userID; 
-	protected final String first; 
-	protected final String last; 
+	protected int userID;
+	protected String first;
+	protected String last;
 
 	
 	public UserList(int userID, String first, String last) {
@@ -24,4 +26,8 @@ public class UserList {
 	public String getLastName() {
 		return last; 
 	}
+
+	public void setFirst(String first){this.first = first;}
+
+	public void setLast(String last){this.last = last;}
 }

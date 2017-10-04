@@ -31,4 +31,14 @@ public class Customer extends UserList {
 	}
 
 
+	public void setAddress(String address) {
+
+		this.address =address;
+	}
+	public void setPhoneNumber(String phoneNumber) {
+
+		this.phoneNumber = phoneNumber;
+	}
+
+
 }

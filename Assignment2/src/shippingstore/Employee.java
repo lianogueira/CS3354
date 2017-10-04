@@ -38,5 +38,17 @@ public class Employee extends UserList{
 		return salary;
 	}
 
+	public void setSocial(int social){
+		this.social = social;
+	}
+
+	public void setDirectDeposit(int directDeposit){
+		this.directDeposit = directDeposit;
+	}
+
+	public void setSalary(float salary){
+		this.salary = salary;
+	}
+
 
 }
