@@ -3,7 +3,6 @@ package shippingstore;
 /**
  * Class to describe the information of Employee (Extends UserList) <br><br>
  * <b>Data: </b><br>
- * User ID <br>
  * Social Security<br>
  * Salary<br>
  * Direct Deposit<br>
@@ -18,6 +17,12 @@ public class Employee extends UserList{
 	private  int directDeposit;
 	private  float salary;
 
+	/**
+	 * Constructs an Employee object given the input.
+	 * @param directDeposit Direct Deposit to initialize the employee.
+ 	 * @param social Social Security to initialize the employee.
+	 * @param salary Salary to initialize the employee.
+	 */
 
 	public Employee(int social, int directDeposit, float salary,int userID, String first, String last) {
 		super(userID, first,last);
@@ -26,26 +31,46 @@ public class Employee extends UserList{
 		this.salary = salary;
 	}
 
+	/**
+	 * Get Social
+	 * @return social
+	 */
 	public int getSocial() {
 		return social;
 	}
 
+	/**
+	 * Get Direct Deposit
+	 * @return directDeposit
+	 */
 	public int getDirectDepoist() {
 		return directDeposit;
 	}
-
+	/**
+	 * Get Salary
+	 * @return salary
+	 */
 	public float getSalary() {
 		return salary;
 	}
-
+	/**
+	 *  Set Social
+	 * @param social
+	 */
 	public void setSocial(int social){
 		this.social = social;
 	}
-
+	/**
+	 * Set Direct Deposit
+	 * @param directDeposit
+	 */
 	public void setDirectDeposit(int directDeposit){
 		this.directDeposit = directDeposit;
 	}
-
+	/**
+	 * Set Salary
+	 * @param salary
+	 */
 	public void setSalary(float salary){
 		this.salary = salary;
 	}

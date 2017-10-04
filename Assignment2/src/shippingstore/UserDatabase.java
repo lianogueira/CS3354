@@ -56,6 +56,9 @@ public class UserDatabase implements Serializable {
 		return userType;
 	}
 
+	/** This constructor initializes the ArrayList with the data from file
+     * 	@throws Exception (throws Exception)
+	 */
 
 	public UserDatabase() throws Exception {
 		ListOfUsers = new ArrayList<>();
@@ -73,7 +76,9 @@ public class UserDatabase implements Serializable {
 
 	}
 
-
+	/**
+	 * This method displays all users in the database.
+	 */
 	public void displayUsers() {
 
 
@@ -111,8 +116,12 @@ public class UserDatabase implements Serializable {
 
 	}
 
-
-
+	/**
+	 * This method adds a new user to the database given a
+	 * first and last name.
+	 * @param first
+	 * @param last
+	 */
 	public void addUser(String first, String last) {
 
 		char choice;
@@ -194,7 +203,10 @@ public class UserDatabase implements Serializable {
 		}while(valid == false);
 
 }
-
+	/**
+	 * Updates user information based on the userID.
+	 * @param userID
+	 */
 	public void updateUser(int userID){
 
 
@@ -272,7 +284,10 @@ public class UserDatabase implements Serializable {
 
 	}
 
-
+    /**
+     * This method writes the data into file
+     * @throws Exception (throws Exception)
+     */
 	public void flush() throws Exception{
 
 		//write to file
