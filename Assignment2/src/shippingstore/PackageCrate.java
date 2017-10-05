@@ -7,7 +7,7 @@ package shippingstore;
  * Content<br>
  *
  * @author Tyler Hooks and Lia Nogueira de Moura
- * @version 10/02/2017
+ * @version 10/04/2017
  */
 public class PackageCrate extends Package{
 
@@ -49,6 +49,7 @@ public class PackageCrate extends Package{
      * @param format format for printing the values. e.g. | %-11s| %-8s| %-17s| %-14s| %-26s| %-30s|
      */
     public void print(String format){
+        int MAX_CONTENT_LEN = 19;
 
         System.out.println(String.format(format,
                 getTrackingNumber(),
@@ -56,9 +57,8 @@ public class PackageCrate extends Package{
                 getSpecification(),
                 getMailingClass(),
                 "Max Weight: " + String.format("%.2f",maxWeight),
-                "Content: " + content));
+                "Content: " + content.substring(0,(content.length() < MAX_CONTENT_LEN)?content.length():MAX_CONTENT_LEN))); //truncates to MAX_CONTENT_LEN));
     }
-
 
 }
 

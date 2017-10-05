@@ -18,7 +18,10 @@ public class Customer extends UserList {
 	/**
 	 * Constructs an Customer object given the input.
 	 * @param address  Address to initialize the customer.
- 	 * @param phone number Phone Number to initialize the customer.
+ 	 * @param phoneNumber Phone Number to initialize the customer.
+	 * @param userID UserID to initialize the customer.
+	 * @param first First Name to initialize the customer.
+	 * @param last Last Name to initialize the customer.
 	 */
 	public Customer (String address, String phoneNumber,int userID, String first, String last){
 		super(userID, first,last);
@@ -44,20 +47,14 @@ public class Customer extends UserList {
 
 	/**
 	 * Set Address
-	 * @param address
+	 * @param address customer new Address
 	 */
-	public void setAddress(String address) {
+	public void setAddress(String address) {this.address =address;}
 
-		this.address =address;
-	}
 	/**
 	 * Set Phone Number
-	 * @param phoneNumber
+	 * @param phoneNumber Customer new phone number
 	 */
-	public void setPhoneNumber(String phoneNumber) {
-
-		this.phoneNumber = phoneNumber;
-	}
-
+	public void setPhoneNumber(String phoneNumber) {this.phoneNumber = phoneNumber;}
 
 }

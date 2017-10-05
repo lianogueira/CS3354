@@ -18,19 +18,21 @@ import static java.lang.System.out;
 public class UserDatabase implements Serializable {
 
 	Scanner in = new Scanner(System.in);
-	private ArrayList<UserList> ListOfUsers;
+	private ArrayList<UserList> listOfUsers;
 	private final String DB_FILE_NAME = "UserDB.txt";
 
 
 	/**
-	 * Gets an incremental new user ID <br></>
-	 * If there is no user in the database, start with 1. If not, gets the max user ID +1.
+	 * Gets a new incremental new user ID <br>
+	 * If there is no user in the database, return 1 <br>
+	 * Is list of user is not empty, find the max id and returns maxUserID+1
 	 * @return maxUserId+1
 	 */
 	private int nextUserID(){
 		int maxUserId =0;
 
-		for(UserList i : ListOfUsers)
+		//Finds max UserID
+		for(UserList i : listOfUsers)
 			if (i.getUserID() > maxUserId)
 				maxUserId = i.getUserID();
 
@@ -38,15 +40,40 @@ public class UserDatabase implements Serializable {
 	}
 
 
+
+	/** This constructor initializes the ArrayList with the data from file
+	 * 	@throws Exception (throws Exception)
+	 */
+	public UserDatabase() throws Exception {
+		listOfUsers = new ArrayList<>();
+
+		//Read DB file
+		try {
+			FileInputStream fileIN = new FileInputStream(DB_FILE_NAME);
+			ObjectInputStream objectinputstream = new ObjectInputStream(fileIN);
+			listOfUsers = (ArrayList<UserList>) objectinputstream.readObject();
+		}catch (FileNotFoundException e) {
+			FileOutputStream oFile = new FileOutputStream(DB_FILE_NAME, false);
+		} catch (IOException e) {
+			System.out.println("Error~ There is a problem with file input from " + DB_FILE_NAME + ".");
+		}
+
+	}
+
+
 	/**
-	 * Finds the user type based on the User id parameter
+	 * Finds the user type based on the UserID parameter <br>
+	 * If no user is found, return "unknown"
 	 * @param userID UserId that will be used to find the type
+	 * @return userType - (unknown, Employee or Customer)
 	 */
 	public String findUserType(int userID){
 
 		String userType="unknown";
 
-		for(UserList i : ListOfUsers)
+		//loops through the list of users to find the user that matches the user id passed as parameter
+		//If it finds it, gets the type of user
+		for(UserList i : listOfUsers)
 			if (i.getUserID() == userID)
 				if (i instanceof Employee)
 					userType = "Employee";
@@ -56,60 +83,46 @@ public class UserDatabase implements Serializable {
 		return userType;
 	}
 
-	/** This constructor initializes the ArrayList with the data from file
-     * 	@throws Exception (throws Exception)
-	 */
-
-	public UserDatabase() throws Exception {
-		ListOfUsers = new ArrayList<>();
-
-		//Read DB file
-		try {
-			FileInputStream fileIN = new FileInputStream(DB_FILE_NAME);
-			ObjectInputStream objectinputstream = new ObjectInputStream(fileIN);
-			ListOfUsers = (ArrayList<UserList>) objectinputstream.readObject();
-		}catch (FileNotFoundException e) {
-			FileOutputStream oFile = new FileOutputStream(DB_FILE_NAME, false);
-		} catch (IOException e) {
-			System.out.println("Error~ There is a problem with file input from " + DB_FILE_NAME + ".");
-		}
-
-	}
 
 	/**
 	 * This method displays all users in the database.
 	 */
 	public void displayUsers() {
 
+		//Maximum length constants. They will be used to truncate string that are too long
+		int MAX_FIRST_NAME_LEN = 11;
+		int MAX_LAST_NAME_LEN = 11;
+		int MAX_ADDRESS_LEN = 12;
+		int MAX_PHONE_LEN = 14;
 
 		out.println(" ----------------------------------------------------------------------------------------------------------------------------------- ");
 		out.println("| User type  | First Name  | Last Name   | User ID | Address      | Phone Number   | Social Security # | Direct Deposit | Salary   |");
 		out.println(" ----------------------------------------------------------------------------------------------------------------------------------- ");
 
-		for(UserList i : ListOfUsers) {
+		for(UserList i : listOfUsers) {
 			if( i instanceof Employee) {
 				out.println(String.format("| %-11s| %-12s| %-12s| %-8s| %-13s| %-15s| %-18s| %-15s| %-9s|",
-				    "EMPLOYEE",
-				    ((Employee)i).getFirstName(),
-					((Employee)i).getLastName(),
-					((Employee)i).getUserID(),
-					"", "",
-					((Employee)i).getSocial(),
-					((Employee)i).getDirectDepoist(),
-					((Employee)i).getSalary()
-					));
+						"EMPLOYEE",
+						i.getFirstName().substring(0,(i.getFirstName().length() < MAX_FIRST_NAME_LEN)?i.getFirstName().length():MAX_FIRST_NAME_LEN), //truncates to MAX_FIRST_NAME_LEN,
+						i.getLastName().substring(0,(i.getLastName().length() < MAX_LAST_NAME_LEN)?i.getLastName().length():MAX_LAST_NAME_LEN), //truncates to MAX_LAST_NAME_LEN,
+						i.getUserID(),
+						"", "",
+						((Employee)i).getSocial(),
+						((Employee)i).getDirectDepoist(),
+						String.format("%.2f",((Employee)i).getSalary())
+				));
 
 			} else if(i instanceof Customer) {
+
 				out.println(String.format("| %-11s| %-12s| %-12s| %-8s| %-13s| %-15s| %-18s| %-15s| %-9s|",
 						"CUSTOMER",
-						((Customer)i).getFirstName(),
-						((Customer)i).getLastName(),
-						((Customer)i).getUserID(),
-						((Customer)i).getAddress(),
-						((Customer)i).getPhoneNumber(),"", "", ""
-						));
-			}else {
-				out.println("There are currently no users to display.");
+						i.getFirstName().substring(0,(i.getFirstName().length() < MAX_FIRST_NAME_LEN)?i.getFirstName().length():MAX_FIRST_NAME_LEN), //truncates to MAX_FIRST_NAME_LEN
+						i.getLastName().substring(0,(i.getLastName().length() < MAX_LAST_NAME_LEN)?i.getLastName().length():MAX_LAST_NAME_LEN), //truncates to MAX_LAST_NAME_LEN
+						i.getUserID(),
+						((Customer)i).getAddress().substring(0,(((Customer)i).getAddress().length() < MAX_ADDRESS_LEN)?((Customer)i).getAddress().length():MAX_ADDRESS_LEN), //truncates to MAX_ADDRESS_LEN
+						((Customer)i).getPhoneNumber().substring(0,(((Customer)i).getPhoneNumber().length() < MAX_PHONE_LEN)?((Customer)i).getPhoneNumber().length():MAX_PHONE_LEN),  //truncates to MAX_PHONE_LEN
+						"", "", ""
+				));
 			}
 		}
 		out.println(" ----------------------------------------------------------------------------------------------------------------------------------- ");
@@ -119,8 +132,8 @@ public class UserDatabase implements Serializable {
 	/**
 	 * This method adds a new user to the database given a
 	 * first and last name.
-	 * @param first
-	 * @param last
+	 * @param first First Name of the new user. - (Data type: String)
+	 * @param last Last Name of the new user. - (Data type: String)
 	 */
 	public void addUser(String first, String last) {
 
@@ -137,157 +150,166 @@ public class UserDatabase implements Serializable {
 
 		do {
 			switch(choice) {
-			case 'c':
-			case 'C':
-				out.print("\n Please enter address: ");
-				String address = in.nextLine();
+				case 'c':
+				case 'C':
 
+					//gets address from user
+					out.print("\n Please enter address: ");
+					String address = in.nextLine();
 
-				out.print("\n Please enter phone number: ");
-				String phone = in.nextLine();
-				ListOfUsers.add(new Customer(address, phone,id,first,last));
-				out.println(" User added.");
-				valid = true;
-				break;
+					//gets phone from user
+					out.print("\n Please enter phone number: ");
+					String phone = in.nextLine();
 
-			case 'e':
-			case 'E':
+					//adds new customer
+					listOfUsers.add(new Customer(address, phone,id,first,last));
+					out.println(" User added.");
+					valid = true;
+					break;
 
-				//get ssn from user and validate input
-				out.print("\n Please enter your Social Security number: ");
-				while (!in.hasNextInt()) {
-					out.println("\n Error: Invalid Social Security number");
+				case 'e':
+				case 'E':
+
+					//gets ssn from user and validates input
 					out.print("\n Please enter your Social Security number: ");
-					in.next();
-				}
-				int social = in.nextInt();
-				in.nextLine();
+					while (!in.hasNextInt()) {
+						out.println("\n Error: Invalid Social Security number");
+						out.print("\n Please enter your Social Security number: ");
+						in.next();
+					}
+					int social = in.nextInt();
+					in.nextLine();
 
 
-				//get direct deposit from user and validates input
-				System.out.print("\n Please enter Direct Deposit number:");
-				while (!in.hasNextInt()) {
-					out.println("\n Error: Invalid Direct Deposit number");
-					out.print("\n Please enter your Direct Deposit number: ");
-					in.next();
-				}
-				int directDeposit = in.nextInt();
-				in.nextLine();
+					//gets direct deposit from user and validates input
+					out.print("\n Please enter Direct Deposit number:");
+					while (!in.hasNextInt()) {
+						out.println("\n Error: Invalid Direct Deposit number");
+						out.print("\n Please enter your Direct Deposit number: ");
+						in.next();
+					}
+					int directDeposit = in.nextInt();
+					in.nextLine();
 
 
-				//get Salary from user and validates input
-				out.print("\n Please enter Salary:");
-				while (!in.hasNextFloat()) {
-					out.println("\n Error: Invalid Salary");
-					out.print("\n Please enter Salary: ");
-					in.next();
-				}
-				float salary = in.nextFloat();
-				in.nextLine();
+					//gets Salary from user and validates input
+					out.print("\n Please enter Salary:");
+					while (!in.hasNextFloat()) {
+						out.println("\n Error: Invalid Salary");
+						out.print("\n Please enter Salary: ");
+						in.next();
+					}
+					float salary = in.nextFloat();
+					in.nextLine();
+
+					//adds new employee
+					listOfUsers.add(new Employee(social, directDeposit,salary, id,first,last));
+					out.println(" User added.");
+					valid = true;
+					break;
 
 
-				ListOfUsers.add(new Employee(social, directDeposit,salary, id,first,last));
-				out.println(" User added.");
-				valid = true;
-				break;
-
-
-			default:
-				out.println("\n Invalid Option~");
-				out.print("\n Answer c for customer or e for employee: ");
-				choice = in.next().charAt(0);
-				in.nextLine();
-				break;
+				default:
+					out.println("\n Invalid Option~");
+					out.print("\n Answer c for customer or e for employee: ");
+					choice = in.next().charAt(0);
+					in.nextLine();
+					break;
 
 			}
 		}while(valid == false);
+	}
 
-}
+
 	/**
 	 * Updates user information based on the userID.
-	 * @param userID
+	 * @param userID userID UserID to be used for the update - (Data type: Integer)
 	 */
 	public void updateUser(int userID){
+		boolean doesUserExist=false;
 
+		for(UserList t : listOfUsers) {
+			if(userID == t.getUserID()) {
 
-			for(UserList t : ListOfUsers) {
-				if(userID == t.getUserID()) {
+				doesUserExist=true;
 
-					out.println(" Updating record for: UserID=" + userID + " - Name=" + t.getFirstName() + " " + t.getLastName() );
+				out.println(" Updating record for: UserID=" + userID + " - Name=" + t.getFirstName() + " " + t.getLastName() );
 
-					//get first name from user
-					out.print("\n Please enter new First Name: ");
-					String first = in.nextLine();
-					t.setFirst(first);
+				//gets first name from user
+				out.print("\n Please enter new First Name: ");
+				String first = in.nextLine();
+				t.setFirst(first);
 
-					//get last name from user
-					out.print("\n Please enter new Last Name: ");
-					String last = in.nextLine();
-					t.setLast(last);
+				//gets last name from user
+				out.print("\n Please enter new Last Name: ");
+				String last = in.nextLine();
+				t.setLast(last);
 
-					if (t instanceof Employee) {
+				if (t instanceof Employee) {
 
-						out.println(" Hello, " + first + " " + last);
+					out.println(" Hello, " + first + " " + last);
 
-
-						//get ssn from user and validate input
+					//gets ssn from user and validate input
+					out.print("\n Please enter your Social Security number: ");
+					while (!in.hasNextInt()) {
+						out.println("\n Error: Invalid Social Security number");
 						out.print("\n Please enter your Social Security number: ");
-						while (!in.hasNextInt()) {
-							out.println("\n Error: Invalid Social Security number");
-							out.print("\n Please enter your Social Security number: ");
-							in.next();
-						}
-						int social = in.nextInt();
-						in.nextLine();
-						((Employee) t).setSocial(social);
+						in.next();
+					}
+					int social = in.nextInt();
+					in.nextLine();
+					((Employee) t).setSocial(social);
 
 
-						//get direct deposit from user and validates input
-						out.print("\n Please enter Direct Deposit number: ");
-						while (!in.hasNextInt()) {
-							out.println("\n Error: Invalid Direct Deposit number");
-							out.print("\n Please enter your Direct Deposit number: ");
-							in.next();
-						}
-						int directDeposit = in.nextInt();
-						in.nextLine();
-						((Employee) t).setDirectDeposit(directDeposit);
+					//gets direct deposit from user and validates input
+					out.print("\n Please enter Direct Deposit number: ");
+					while (!in.hasNextInt()) {
+						out.println("\n Error: Invalid Direct Deposit number");
+						out.print("\n Please enter your Direct Deposit number: ");
+						in.next();
+					}
+					int directDeposit = in.nextInt();
+					in.nextLine();
+					((Employee) t).setDirectDeposit(directDeposit);
 
 
-						//get Salary from user and validates inout
+					//gets Salary from user and validates inout
+					out.print("\n Please enter Salary: ");
+					while (!in.hasNextFloat()) {
+						out.println("\n Error: Invalid Salary");
 						out.print("\n Please enter Salary: ");
-						while (!in.hasNextFloat()) {
-							out.println("\n Error: Invalid Salary");
-							out.print("\n Please enter Salary: ");
-							in.next();
-						}
-						float salary = in.nextFloat();
-						in.nextLine();
-						((Employee) t).setSalary(salary);
-
+						in.next();
 					}
-					if (t instanceof Customer) {
+					float salary = in.nextFloat();
+					in.nextLine();
+					((Employee) t).setSalary(salary);
 
-						//get address from user
-						out.print("\n Please enter address: ");
-						String address = in.nextLine();
-						((Customer) t).setAddress(address);
+				}
+				if (t instanceof Customer) {
 
-						//get phone number from user
-						out.print("\n Please enter phone number: ");
-						String phone = in.nextLine();
-						((Customer) t).setPhoneNumber(phone);
-					}
+					//gets address from user
+					out.print("\n Please enter address: ");
+					String address = in.nextLine();
+					((Customer) t).setAddress(address);
+
+					//gets phone number from user
+					out.print("\n Please enter phone number: ");
+					String phone = in.nextLine();
+					((Customer) t).setPhoneNumber(phone);
 				}
 			}
+		}
 
+		if (doesUserExist==false) {
+			out.println(" \n User does not exist ");
+		}
 
 	}
 
-    /**
-     * This method writes the data into file
-     * @throws Exception (throws Exception)
-     */
+	/**
+	 * This method writes the data into file
+	 * @throws Exception (throws Exception)
+	 */
 	public void flush() throws Exception{
 
 		//write to file
@@ -295,7 +317,7 @@ public class UserDatabase implements Serializable {
 			FileOutputStream fileOUT = new FileOutputStream(DB_FILE_NAME);
 			ObjectOutputStream objectOUT = new ObjectOutputStream(fileOUT);
 
-			objectOUT.writeObject(ListOfUsers);
+			objectOUT.writeObject(listOfUsers);
 			objectOUT.close();
 		}
 		catch (IOException e) {

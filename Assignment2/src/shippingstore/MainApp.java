@@ -8,36 +8,33 @@ import static java.lang.System.out;
 
 
 /**
- * Shipping Store <br><br>
+ * <b>Shipping Store 2</b><br><br>
  *
  * Program that simulates a shipping store database<br>
  * The database maintain records of the packages, users and completed transactions of a shipping store<br><br>
  *
  * <b>User options: </b><br>
- * 1 Show all existing package orders in the database<br>
- * 2 Add a new package order to the database<br>
- * 3 Delete a package order from a database<br>
- * 4 Search for a package order (given its Tracking #)<br>
- * 5 Show a list of users in the database<br>
- * 6 Add a new user to the database<br>
- * 7 Update user info(given their id)<br>
- * 8 Complete a shipping transaction.<br>
- * 9 Show completed shipping transactions<br>
- * 10 Exit program.<br>
+ * 1) Show all existing package orders in the database<br>
+ * 2) Add a new package order to the database<br>
+ * 3) Delete a package order from a database<br>
+ * 4) Search for a package order (given its Tracking #)<br>
+ * 5) Show a list of users in the database<br>
+ * 6) Add a new user to the database<br>
+ * 7) Update user info(given their id)<br>
+ * 8) Complete a shipping transaction.<br>
+ * 9) Show completed shipping transactions<br>
+ * 10) Exit program.<br>
  *
  * @author Tyler Hooks and Lia Nogueira de Moura
- * @version 10/02/2017
+ * @version 10/04/2017
  */
-
-
-
 public class MainApp {
 
     /**
      * This method will begin the user interface console. Main uses a loop to
      * continue doing commands until the user types '10'. A lot of user input
      * validation is done in the loop. At least enough to allow the interface
-     * with PackageDatabase to be safe.
+     * with PackageDatabase, UserDatabase and CompletedTransactionsDatabase to be safe.
      *
      * @param args this program expects no command line arguments
      * @throws Exception (throws Exception)
@@ -46,9 +43,9 @@ public class MainApp {
 
 
         Scanner in = new Scanner(System.in);
-        PackageDatabase PackageDB = new PackageDatabase();
-        UserDatabase userdatabase = new UserDatabase();
-        CompletedTransactionsDatabase CompletedTransactionDB = new CompletedTransactionsDatabase();
+        PackageDatabase packageDB = new PackageDatabase();
+        UserDatabase userDB = new UserDatabase();
+        CompletedTransactionsDatabase cTransactionsDB = new CompletedTransactionsDatabase();
 
 
         //Print Menu
@@ -65,6 +62,7 @@ public class MainApp {
                 + "\t10. Exit program.\n";
 
 
+        //Get selection input from user
         out.println(welcomeMessage);
         String selection = in.next();
         in.nextLine();
@@ -74,53 +72,67 @@ public class MainApp {
 
             //Use user input to decide next action
             switch (selection) {
-                case "1":
-                    PackageDB.showPackages();
+                case "1": //Show all existing package orders in the database
+                    packageDB.showPackages("");
                     break;
-                case "2":
+                case "2": //Add a new package order to the database
+                    packageDB.addNewPackageWithUserInput(cTransactionsDB);
+                    break;
+                case "3": //Delete a package order from a database
 
-                    PackageDB.addNewPackageWithUserInput(CompletedTransactionDB);
+                    packageDB.showPackages("");
+                    out.println("\n Please enter the tracking # of the package to delete from the database: ");
+                    String packageToDelete = in.nextLine();
+                    packageDB.removePackage(packageToDelete);
                     break;
-                case "3":
-                    PackageDB.showPackages();
-                    out.println("\n Please enter the tracking # of the package order to delete from the database: ");
-                    String orderToDelete = in.nextLine();
-                    PackageDB.removePackage(orderToDelete);
-                    break;
-                case "4":
 
-                    out.println("\nEnter the Tracking # of the order you wish to see.\n");
+                case "4": //Search for a package order (given its Tracking #)
+
+                    out.println("\n Enter the Tracking # of the order you wish to see.\n");
                     String trackingNum = in.next();
                     in.nextLine();
-                    PackageDB.searchPackage(trackingNum);
+
+                    out.println("\n Tracking Number = " + trackingNum + "  - Search Results: ");
+                    packageDB.searchPackage(trackingNum);
+
                     break;
 
-                case "5":
+                case "5": //Show a list of users in the database
 
-                    userdatabase.displayUsers();
+                    userDB.displayUsers();
                     break;
 
-                case "6":
+                case "6": //Add a new user to the database
 
                     out.print("\n Please enter a first name: ");
                     String first = in.nextLine();
                     out.print("\n Please enter a last name: ");
                     String last = in.nextLine();
-                    userdatabase.addUser(first, last);
+                    userDB.addUser(first, last);
                     break;
 
-                case "7":
+                case "7": //Update user info(given their id)
 
-                  System.out.println(" Please enter user ID: " );
-                  int userID = in.nextInt();
-                  userdatabase.updateUser(userID);
-                  break;
+                    //gets userID from user and validates input
+                    out.println(" Please enter user ID: " );
+                    while (!in.hasNextInt()) {
+                        out.println("\n Error: Invalid User ID");
+                        out.print("\n Enter User ID: ");
+                        in.next();
+                    }
+                    int userID = in.nextInt();
+                    in.nextLine();
 
-                case "8":
+                    //Calls method to update user
+                    userDB.updateUser(userID);
+
+                    break;
+
+                case "8": //Complete a shipping transaction
 
                     SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 
-                    //Get customerID type from user
+                    //Gets customerID from user and validates input
                     out.print("\n Enter customer ID: ");
                     while (!in.hasNextInt()) {
                         out.println("\n Error: Invalid Customer ID");
@@ -129,26 +141,26 @@ public class MainApp {
                     }
                     Integer customerID=in.nextInt();
                     in.nextLine();
-                    if (userdatabase.findUserType(customerID) == "unknown") {
+                    if (userDB.findUserType(customerID) == "unknown") {
                         out.print("\n Customer does not exists. Please create the customer first.");
                         break;
                     }
-                    else if (userdatabase.findUserType(customerID) == "Employee") {
+                    else if (userDB.findUserType(customerID) == "Employee") {
                         out.print("\n This User id is for an employee. Please enter the customer ID.");
                         break;
                     }
 
 
-                    //Get tracking Number from user
-                    out.print("\n Enter tracking Number:");
+                    //Gets tracking Number from user
+                    out.print("\n Enter tracking Number: ");
                     String trackingNumberInput = in.nextLine();
-                    if (PackageDB.findPackage(trackingNumberInput) == -1) {
+                    if (packageDB.findPackage(trackingNumberInput) == -1) {
                         out.print("\n Tracking Number does not exists. Please create the package first.");
                         break;
                     }
 
 
-                    //Get Shipping Date
+                    //Gets Shipping Date from user and validates input
                     Date shippingDate = new Date();
                     while (true)
                     {
@@ -158,14 +170,14 @@ public class MainApp {
                         try {
                             shippingDate = sdf.parse(str);
                         } catch (ParseException e) {
-                            System.out.println("\n Not a valid date");
+                            out.println("\n Not a valid date");
                             continue;
                         }
                         break;
                     }
 
 
-                    //Get Delivery Date
+                    //Gets Delivery Date from user and validates input
                     Date deliveryDate = new Date();
                     while (true)
                     {
@@ -175,14 +187,14 @@ public class MainApp {
                         try {
                             deliveryDate = sdf.parse(str);
                         } catch (ParseException e) {
-                            System.out.println("\n Not a valid date");
+                            out.println("\n Not a valid date");
                             continue;
                         }
                         break;
                     }
 
 
-                    //Get shippingCost from user and validates input
+                    //Gets shipping Cost from user and validates input
                     out.print("\n Enter Shipping Cost: ");
                     while (!in.hasNextFloat()) {
                         out.println("\n Error: Invalid Shipping Cost.");
@@ -193,7 +205,7 @@ public class MainApp {
                     in.nextLine();
 
 
-                    //Get EmployeeID type from user
+                    //Gets EmployeeID from user and validates input
                     out.print("\n Enter Employee ID: ");
                     while (!in.hasNextInt()) {
                         out.println("\n Error: Invalid Employee ID");
@@ -202,28 +214,28 @@ public class MainApp {
                     }
                     Integer employeeID=in.nextInt();
                     in.nextLine();
-                    if (userdatabase.findUserType(employeeID) == "unknown") {
+                    if (userDB.findUserType(employeeID) == "unknown") {
                         out.print("\n Employee does not exists. Please create the employee first.");
                         break;
                     }
-                    else if (userdatabase.findUserType(employeeID) == "Customer") {
+                    else if (userDB.findUserType(employeeID) == "Customer") {
                         out.print("\n This User id is for a customer. Please enter an employee ID or create a new user.");
                         break;
                     }
 
 
-                    //add new package with the information given by the user
-                    CompletedTransactionDB.completeTransaction(customerID, trackingNumberInput, shippingDate, deliveryDate, cost, employeeID, PackageDB);
+                    //addd new completed transaction with the information given by the user
+                    cTransactionsDB.completeTransaction(customerID, trackingNumberInput, shippingDate, deliveryDate, cost, employeeID, packageDB);
 
                     break;
-                case "9":
-                    CompletedTransactionDB.showTransactions();
+                case "9": //Show completed shipping transactions
+                    cTransactionsDB.showTransactions();
                     break;
-                case "h":
+                case "h": //Show menu options again
                     out.println(welcomeMessage);
                     break;
                 default:
-                    out.println("That is not a recognized command. Please enter another command or 'h' to list the commands.");
+                    out.println(" That is not a recognized command. Please enter another command or 'h' to list the commands.");
                     break;
 
             }
@@ -235,13 +247,12 @@ public class MainApp {
 
 
         in.close();
-        PackageDB.flush();
-        userdatabase.flush();
-        CompletedTransactionDB.flush();
+        packageDB.flush();
+        userDB.flush();
+        cTransactionsDB.flush();
 
         out.print("\n\n Thank you!");
         out.print("\n\n ** Implemented by Tyler Hooks and Lia Nogueira de Moura ** \n\n");
-
 
     }
 }

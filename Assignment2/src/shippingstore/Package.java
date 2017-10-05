@@ -75,8 +75,8 @@ public class Package implements Serializable, Comparable<Package>{
      */
     @Override
     public int compareTo(Package c) {
-        String rhsName = ((Package)c).getTrackingNumber();
-        return trackingNumber.compareTo(rhsName);
+        String rhsName = ((Package)c).getTrackingNumber().toUpperCase();
+        return trackingNumber.toUpperCase().compareTo(rhsName);
     }
 
     /**

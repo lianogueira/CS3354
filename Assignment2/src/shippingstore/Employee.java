@@ -22,8 +22,10 @@ public class Employee extends UserList{
 	 * @param directDeposit Direct Deposit to initialize the employee.
  	 * @param social Social Security to initialize the employee.
 	 * @param salary Salary to initialize the employee.
+	 * @param userID UserID to initialize the employee.
+	 * @param first First Name to initialize the employee.
+	 * @param last Last Name to initialize the employee.
 	 */
-
 	public Employee(int social, int directDeposit, float salary,int userID, String first, String last) {
 		super(userID, first,last);
 		this.directDeposit = directDeposit;
@@ -46,6 +48,7 @@ public class Employee extends UserList{
 	public int getDirectDepoist() {
 		return directDeposit;
 	}
+
 	/**
 	 * Get Salary
 	 * @return salary
@@ -53,23 +56,26 @@ public class Employee extends UserList{
 	public float getSalary() {
 		return salary;
 	}
+
 	/**
 	 *  Set Social
-	 * @param social
+	 * @param social Employee new SSN
 	 */
 	public void setSocial(int social){
 		this.social = social;
 	}
+
 	/**
 	 * Set Direct Deposit
-	 * @param directDeposit
+	 * @param directDeposit Employee new Direct Deposit Number
 	 */
 	public void setDirectDeposit(int directDeposit){
 		this.directDeposit = directDeposit;
 	}
+
 	/**
 	 * Set Salary
-	 * @param salary
+	 * @param salary Employee new salary
 	 */
 	public void setSalary(float salary){
 		this.salary = salary;
