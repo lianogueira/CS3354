@@ -2,6 +2,10 @@ package shippingstore;
 
 import java.io.*;
 import java.util.*;
+import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class represents a car dealership software, providing some basic
@@ -10,6 +14,11 @@ import java.util.*;
  * @author Junye Wen
  */
 public class ShippingStore {
+
+	private static final Logger logger = Logger.getLogger(ShippingStore.class.getName());
+	private static FileHandler log;
+	static private Formatter fomatterTxt;
+
 
     private final List<Package> packageList;
     private final List<User> users;
@@ -48,7 +57,7 @@ public class ShippingStore {
     public void setUserIdCounter(int Counter) {
         this.userIdCounter = Counter;
     }
-    
+
         /**
      * Auxiliary method used to find a package in the database, given its
      * tracking number.
@@ -77,7 +86,7 @@ public class ShippingStore {
     }
 
     /**
-     * 
+     *
      * @param ptn
      * @param specification
      * @param mailingClass
@@ -88,7 +97,7 @@ public class ShippingStore {
         Envelope env = new Envelope(ptn, specification, mailingClass, height, width);
         packageList.add(env);
     }
-    
+
     /**
      *
      * @param ptn
@@ -100,8 +109,9 @@ public class ShippingStore {
     public void addBox(String ptn, String specification, String mailingClass, int dimension, int volume) {
         Box box = new Box(ptn, specification, mailingClass, dimension, volume);
         packageList.add(box);
+        logger.log(Level.INFO, "Logging addBox");
     }
-    
+
     /**
      *
      * @param ptn
@@ -114,7 +124,7 @@ public class ShippingStore {
         Crate crate = new Crate(ptn, specification, mailingClass, loadWeight, content);
         packageList.add(crate);
     }
-    
+
     /**
      *
      * @param ptn
@@ -127,7 +137,7 @@ public class ShippingStore {
         Drum drum = new Drum(ptn, specification, mailingClass, material, diameter);
         packageList.add(drum);
     }
-    
+
 
     /**
      * This method allows the user to delete a package from the inventory
@@ -136,7 +146,7 @@ public class ShippingStore {
      * @return True if the package was found and was deleted. False otherwise.
      */
     public boolean deletePackage(String ptn) {
-        
+
         for (Package p : packageList) {
             if (p.getPtn().equals(ptn)) {
                 packageList.remove(p);
@@ -145,7 +155,7 @@ public class ShippingStore {
         }
         return false;
     }
-    
+
 
     /**
      * Auxiliary private method to return a list of packages in a formatted
@@ -163,19 +173,19 @@ public class ShippingStore {
         }
         text += "---------------------------------------------------"
                 + "----------------------------------------------------------\n";
-        
+
         return text;
     }
 
     /**
      * This method return all the packages currently in the inventory, in a
      * formatted manner.
-     * @return 
+     * @return
      */
     public String getAllPackagesFormatted() {
         return getFormattedPackageList(packageList);
     }
-    
+
     /**
      *
      * @param ptn
@@ -184,10 +194,10 @@ public class ShippingStore {
     public String getPackageFormatted(String ptn) {
         ArrayList<Package> matchingPackage = new ArrayList<Package>(1);
         matchingPackage.add(findPackage(ptn));
-        
+
         return getFormattedPackageList(matchingPackage);
     }
-    
+
     /**
      *
      * @param firstName
@@ -198,7 +208,7 @@ public class ShippingStore {
     public void addCustomer(String firstName, String lastName, String phoneNumber, String address) {
         users.add(new Customer(userIdCounter++, firstName, lastName, phoneNumber, address));
     }
-    
+
     /**
      *
      * @param firstName
@@ -211,8 +221,8 @@ public class ShippingStore {
         users.add(new Employee(userIdCounter++, firstName, lastName, ssn, monthlySalary, bankAccNumber));
     }
 
-    
-    
+
+
     /**
      * Auxiliary private method to return a list of users in a formatted
      * manner.
@@ -232,7 +242,7 @@ public class ShippingStore {
         text += "---------------------------------------------------"
                 + "-----------------------------------------------"
                 + "---------------\n";
-        
+
         return text;
     }
 
@@ -243,7 +253,7 @@ public class ShippingStore {
     public String getAllUsersFormatted() {
         return getFormattedUserList(users);
     }
-    
+
     /**
      *
      * @param userID
@@ -252,10 +262,10 @@ public class ShippingStore {
     public boolean userExists(int userID) {
         if (findUser(userID) != null)
             return true;
-        
+
         return false;
     }
-    
+
     /**
      *
      * @param userID
@@ -263,16 +273,16 @@ public class ShippingStore {
      */
     public User findUser(int userID) {
         User user = null;
-        
+
         for (User u : users) {
             if (u.getId() == userID) {
                 user = u;
             }
         }
-        
+
         return user;
     }
-    
+
     /**
      *
      * @param userID
@@ -284,7 +294,7 @@ public class ShippingStore {
             return true;
         return false;
     }
-    
+
     /**
      *
      * @param userID
@@ -296,7 +306,7 @@ public class ShippingStore {
             return true;
         return false;
     }
-    
+
     /**
      *
      * @param userID
@@ -317,7 +327,7 @@ public class ShippingStore {
         customer.setPhoneNumber(phoneNumber);
         customer.setAddress(address);
     }
-    
+
     /**
      *
      * @param userID
@@ -355,11 +365,11 @@ public class ShippingStore {
         Transaction trans = new Transaction(customerId, employeeId, ptn, shippingDate, deliveryDate, price);
         transactions.add(trans);
     }
-    
+
 
     /**
      * Return a list of all recorded transactions.
-     * 
+     *
      * @return transactions
      */
     public String getAllTransactionsText() {
@@ -381,9 +391,9 @@ public class ShippingStore {
     // convering from serialized Object to Arraylist<>
     public static ShippingStore readDatabase() {
         System.out.print("Reading database...");
-        
+
         File dataFile = new File("ShippingStore.ser");
-        
+
         ShippingStore ss = null;
 
         // Try to read existing dealership database from a file
@@ -410,10 +420,13 @@ public class ShippingStore {
             input.close();
         } catch (ClassNotFoundException ex) {
             System.err.println(ex.toString());
+            logger.log(Level.WARNING,ex.toString(), ex);
         } catch (FileNotFoundException ex) {
-            System.err.println("Database file not found.");
+          //  System.err.println("Database file not found.");
+            logger.log(Level.WARNING,"Database file not found", ex);
         } catch (IOException ex) {
-            System.err.println(ex.toString());
+            //System.err.println(ex.toString());
+            logger.log(Level.WARNING,ex.toString(), ex);
         } finally {
             close(file);
         }
@@ -444,7 +457,8 @@ public class ShippingStore {
 
             output.close();
         } catch (IOException ex) {
-            System.err.println(ex.toString());
+            //System.err.println(ex.toString());
+            logger.log(Level.WARNING, ex.toString(), ex);
         } finally {
             close(file);
         }
@@ -464,7 +478,8 @@ public class ShippingStore {
         try {
             c.close();
         } catch (IOException ex) {
-            System.err.println(ex.toString());
+            //System.err.println(ex.toString());
+            logger.log(Level.WARNING, "ex.toString()", ex);
         }
     }
 
