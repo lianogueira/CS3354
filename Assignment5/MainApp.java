@@ -8,9 +8,7 @@ import java.util.logging.*;
 * Main access point
 */
 public class MainApp {
-
-    private static Logger logger = Logger.getLogger("shippingstore");
-    //private static FileHandler fh = new FileHandler("log.txt");
+  
     ShippingStore ss;
 
 
