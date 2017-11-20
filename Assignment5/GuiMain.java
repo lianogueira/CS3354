@@ -2,6 +2,7 @@ package shippingstore;
 
 import java.awt.event.ActionEvent;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
 import javax.swing.*;
 import javax.swing.JFrame;
 
@@ -26,6 +27,7 @@ public class GuiMain {
         eMenuItem = new JMenuItem("Exit");
         eMenuItem.setToolTipText("Exit program");
         eMenuItem.addActionListener((ActionEvent event) -> {
+            ss.writeDatabase();
             System.exit(0);
         });
         file.add(eMenuItem);
@@ -48,6 +50,14 @@ public class GuiMain {
         //Creating gui of user tab
         GuiUserTab userGui = new GuiUserTab(ss, MainUserPanel);
 
+
+        //Write to file on window closing
+        f.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                ss.writeDatabase();
+            }
+        });
 
         //Frame configuration
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

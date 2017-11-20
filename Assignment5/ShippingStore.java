@@ -3,9 +3,9 @@ package shippingstore;
 import java.io.*;
 import java.util.*;
 import java.util.logging.FileHandler;
-import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 /**
  * This class represents a car dealership software, providing some basic
@@ -15,16 +15,34 @@ import java.util.logging.Logger;
  */
 public class ShippingStore {
 
-	private static final Logger logger = Logger.getLogger(ShippingStore.class.getName());
-	private static FileHandler log;
-	static private Formatter fomatterTxt;
-
-
     private final List<Package> packageList;
     private final List<User> users;
     private final List<Transaction> transactions;
 
     private int userIdCounter = 1;
+
+
+   	private static final Logger logger = Logger.getLogger(ShippingStore.class.getName());
+    static FileHandler fh;
+
+    public static void main(String[] args) {
+     Logger logger = Logger.getLogger("My Log");
+     try {
+
+    	 fh = new FileHandler("logFile.txt");
+    	 SimpleFormatter formatter = new SimpleFormatter();
+    	 fh.setFormatter(formatter);
+
+    	 logger.info("a test log");
+     } catch(SecurityException ex) {
+    	 ex.printStackTrace();
+    	 logger.log(Level.WARNING, "security trouble", ex);
+
+     } catch (IOException ex) {
+    	 ex.printStackTrace();
+    	 logger.log(Level.WARNING, "output trouble", ex);
+     }
+}
 
     /**
      * Default constructor. Initializes the inventory, users, and transactions
@@ -96,6 +114,7 @@ public class ShippingStore {
     public void addEnvelope(String ptn, String specification, String mailingClass, int height, int width) {
         Envelope env = new Envelope(ptn, specification, mailingClass, height, width);
         packageList.add(env);
+        logger.log(Level.INFO, "Logging addEnvelope");
     }
 
     /**
@@ -109,7 +128,6 @@ public class ShippingStore {
     public void addBox(String ptn, String specification, String mailingClass, int dimension, int volume) {
         Box box = new Box(ptn, specification, mailingClass, dimension, volume);
         packageList.add(box);
-        logger.log(Level.INFO, "Logging addBox");
     }
 
     /**
@@ -420,13 +438,10 @@ public class ShippingStore {
             input.close();
         } catch (ClassNotFoundException ex) {
             System.err.println(ex.toString());
-            logger.log(Level.WARNING,ex.toString(), ex);
         } catch (FileNotFoundException ex) {
-          //  System.err.println("Database file not found.");
-            logger.log(Level.WARNING,"Database file not found", ex);
+            System.err.println("Database file not found.");
         } catch (IOException ex) {
-            //System.err.println(ex.toString());
-            logger.log(Level.WARNING,ex.toString(), ex);
+            System.err.println(ex.toString());
         } finally {
             close(file);
         }
@@ -441,6 +456,7 @@ public class ShippingStore {
      */
     public void writeDatabase() {
         System.out.print("Writing database...");
+        logger.entering(getClass().getName(), "entering wrtieDatabase");
         //serialize the database
         OutputStream file = null;
         OutputStream buffer = null;
@@ -457,11 +473,12 @@ public class ShippingStore {
 
             output.close();
         } catch (IOException ex) {
-            //System.err.println(ex.toString());
-            logger.log(Level.WARNING, ex.toString(), ex);
+            System.err.println(ex.toString());
+            logger.log(Level.WARNING, "error", ex);
         } finally {
             close(file);
         }
+        logger.exiting(getClass().getName(), "exiting wrtieDatabase");
         System.out.println("Done.");
     }
 
@@ -478,9 +495,60 @@ public class ShippingStore {
         try {
             c.close();
         } catch (IOException ex) {
-            //System.err.println(ex.toString());
-            logger.log(Level.WARNING, "ex.toString()", ex);
+            System.err.println(ex.toString());
+            logger.log(Level.WARNING, "error", ex);
         }
     }
+
+
+
+
+    public Object[][] returnPackageDataArray(String ptn) {
+
+
+        Object[][] data = new Object[packageList.size()][6];
+
+        int i = 0;
+        int j;
+        for (Package p : packageList) {
+
+            if (ptn.isEmpty() || ptn.equals(p.getPtn())) {
+
+                j = 0;
+                for (String w : p.toString().split(";", 6)) {
+                    data[i][j] = w;
+                    j++;
+                }
+                i++;
+            }
+
+        }
+
+        return data;
+
+    }
+
+
+    public Object[][] returnUserDataArray() {
+
+        Object[][] data = new Object[users.size()][10];
+
+        int i = 0;
+        int j;
+        for (User p : users) {
+
+                j = 0;
+                for (String w : p.toString().split(";", 10)) {
+                    data[i][j] = w;
+                    j++;
+                }
+                i++;
+        }
+
+        return data;
+
+    }
+
+
 
 }

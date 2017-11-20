@@ -82,8 +82,8 @@ public class Box extends Package {
 
     @Override
     public String toString() {
-        return "Envelope{" + "ptn=" + ptn + ", specification=" + specification +
-                ", Mailing Class=" + mailingClass + ", height=" + dimension +
-                ", volume=" + volume + '}';
+        return "Box;"  + ptn + ";" + specification +
+                ";" + mailingClass + ";Dimension=" + dimension +
+                ";Volume=" + volume;
     }
 }
