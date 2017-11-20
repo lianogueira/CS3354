@@ -2,18 +2,30 @@ package shippingstore;
 
 
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.*;
 import javax.swing.*;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
+
+
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+
 
 
 
@@ -25,19 +37,19 @@ public class GuiPackagesTab {
     //New JPanels used in the Package Tab
     private SpringLayout layoutForms = new SpringLayout();
     private JPanel PackagePanelButtons = new JPanel(new GridLayout());
-    private JPanel UserPanelAdd = new JPanel(new BorderLayout());
-    private JPanel UserPanelAddAux = new JPanel(layoutForms);
-    private JPanel UserPanelDelete = new JPanel(new BorderLayout());
-    private JPanel UserPanelDeleteAux = new JPanel(layoutForms);
-    private JPanel UserPanelComplete = new JPanel(new BorderLayout());
-    private JPanel UserPanelCompleteAux = new JPanel(new BorderLayout());
-    private JPanel UserPanelSearch = new JPanel(new BorderLayout());
-    private JPanel UserPanelSearchAux = new JPanel(new BorderLayout());
+    private JPanel PackagePanelAdd = new JPanel(new BorderLayout());
+    private JPanel PackagePanelAddAux = new JPanel(layoutForms);
+    private JPanel PackagePanelDelete = new JPanel(new BorderLayout());
+    private JPanel PackagePanelDeleteAux = new JPanel(layoutForms);
+    private JPanel PackagePanelComplete = new JPanel(new BorderLayout());
+    private JPanel PackagePanelCompleteAux = new JPanel(layoutForms);
+    private JPanel PackagePanelSearch = new JPanel(new BorderLayout());
+    private JPanel PackagePanelSearchAux = new JPanel(layoutForms);
 
     //Main Buttons
     private JButton buttonAdd = new JButton("Add");
     private JButton buttonDelete = new JButton("Delete");
-    private JButton buttonComplete = new JButton("Complete");
+    private JButton buttonComplete = new JButton("Transactions");
     private JButton buttonSearch = new JButton("Search");
     private Font buttonFont = new Font("Arial", Font.PLAIN, 13);
     private Dimension buttonDimension = new Dimension(5, 60);
@@ -82,6 +94,16 @@ public class GuiPackagesTab {
     private JTextField txtDeleteTrackingNumber = new JTextField("", 15);
 
 
+    //Labels and Text fields for Search Panel
+    private JLabel lblSearchInfo = new JLabel("Enter a tracking number to see one specific Tracking Number or leave field blank to see all packages");
+    private JLabel lblSearchTrackingNumber = new JLabel("Tracking Number: ");
+    private JTextField txtSearchTrackingNumber = new JTextField("", 15);
+
+    private DefaultTableModel model = new DefaultTableModel();
+    String[] packageColumns = new String[] {"Type", "Tracking Number", "Specification", "MailingList", "Custom 1", "Custom 2"};
+
+
+
     //constructor
     public GuiPackagesTab(ShippingStore ss, JPanel MainPackagePanel) {
         initGui(ss, MainPackagePanel);
@@ -106,30 +128,30 @@ public class GuiPackagesTab {
         //Setting up panel for add
         TitledBorder titleAdd = BorderFactory.createTitledBorder("Add New package Order");
         titleAdd.setTitleFont(buttonFont);
-        UserPanelAdd.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        UserPanelAdd.add(UserPanelAddAux);
-        UserPanelAddAux.setBorder(titleAdd);
+        PackagePanelAdd.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        PackagePanelAdd.add(PackagePanelAddAux);
+        PackagePanelAddAux.setBorder(titleAdd);
 
         //Setting up panel for delete
         TitledBorder titleDelete = BorderFactory.createTitledBorder("Delete Package Order");
         titleDelete.setTitleFont(buttonFont);
-        UserPanelDelete.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        UserPanelDelete.add(UserPanelDeleteAux);
-        UserPanelDeleteAux.setBorder(titleDelete);
+        PackagePanelDelete.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        PackagePanelDelete.add(PackagePanelDeleteAux);
+        PackagePanelDeleteAux.setBorder(titleDelete);
 
         //Setting up panel for delete
-        TitledBorder titleComplete = BorderFactory.createTitledBorder("Complete Order");
+        TitledBorder titleComplete = BorderFactory.createTitledBorder("Completed Order Transactions");
         titleComplete.setTitleFont(buttonFont);
-        UserPanelComplete.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        UserPanelComplete.add(UserPanelCompleteAux);
-        UserPanelCompleteAux.setBorder(titleComplete);
+        PackagePanelComplete.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        PackagePanelComplete.add(PackagePanelCompleteAux);
+        PackagePanelCompleteAux.setBorder(titleComplete);
 
         //Setting up panel for search
         TitledBorder titleSearch = BorderFactory.createTitledBorder("Search Orders");
         titleSearch.setTitleFont(buttonFont);
-        UserPanelSearch.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
-        UserPanelSearch.add(UserPanelSearchAux);
-        UserPanelSearchAux.setBorder(titleSearch);
+        PackagePanelSearch.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        PackagePanelSearch.add(PackagePanelSearchAux);
+        PackagePanelSearchAux.setBorder(titleSearch);
 
 
         //Content of Add Panel
@@ -140,6 +162,9 @@ public class GuiPackagesTab {
         //Content of Delete Panel
         setUpDeletePanel();
 
+
+        //Content of Search Panel
+        setUpSearchPanel();
 
     }
 
@@ -162,13 +187,16 @@ public class GuiPackagesTab {
         buttonAddDatabase.setFont(buttonFont);
         layoutForms.putConstraint(SpringLayout.SOUTH, buttonAddDatabase,65, SpringLayout.SOUTH, lblWidth);
         layoutForms.putConstraint(SpringLayout.WEST, buttonAddDatabase, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(buttonAddDatabase);
+        PackagePanelAddAux.add(buttonAddDatabase);
 
 
         buttonAddDatabase.addActionListener((ActionEvent event) -> {
 
             if (txtTrackingNumber.getText().length() != 5) {
-                JOptionPane.showMessageDialog(MainPackagePanel, "Tracking Number must have 5 characters!");
+                JOptionPane.showMessageDialog(MainPackagePanel, "Tracking Number must have 5 characters");
+            }
+            else if (ss.packageExists(txtTrackingNumber.getText())) {
+                JOptionPane.showMessageDialog(MainPackagePanel, "Tracking Number already exist");
             }
             else if (!isInteger(txtHeight.getText()) && rdbEnvelope.isSelected()) {
                 JOptionPane.showMessageDialog(MainPackagePanel, "Heigh must be a number");
@@ -237,40 +265,41 @@ public class GuiPackagesTab {
 
         //Setting up button actions
         buttonAdd.addActionListener((ActionEvent event) -> {
-            MainPackagePanel.remove(UserPanelDelete);
-            MainPackagePanel.remove(UserPanelComplete);
-            MainPackagePanel.remove(UserPanelSearch);
+            MainPackagePanel.remove(PackagePanelDelete);
+            MainPackagePanel.remove(PackagePanelComplete);
+            MainPackagePanel.remove(PackagePanelSearch);
             MainPackagePanel.setVisible(false);
-            MainPackagePanel.add(UserPanelAdd, BorderLayout.CENTER);
+            MainPackagePanel.add(PackagePanelAdd, BorderLayout.CENTER);
             MainPackagePanel.setVisible(true);
         });
 
 
         buttonDelete.addActionListener((ActionEvent event) -> {
-            MainPackagePanel.remove(UserPanelAdd);
-            MainPackagePanel.remove(UserPanelComplete);
-            MainPackagePanel.remove(UserPanelSearch);
+            MainPackagePanel.remove(PackagePanelAdd);
+            MainPackagePanel.remove(PackagePanelComplete);
+            MainPackagePanel.remove(PackagePanelSearch);
             MainPackagePanel.setVisible(false);
-            MainPackagePanel.add(UserPanelDelete, BorderLayout.CENTER);
+            MainPackagePanel.add(PackagePanelDelete, BorderLayout.CENTER);
             MainPackagePanel.setVisible(true);
         });
 
         buttonComplete.addActionListener((ActionEvent event) -> {
-            MainPackagePanel.remove(UserPanelAdd);
-            MainPackagePanel.remove(UserPanelDelete);
-            MainPackagePanel.remove(UserPanelSearch);
+            MainPackagePanel.remove(PackagePanelAdd);
+            MainPackagePanel.remove(PackagePanelDelete);
+            MainPackagePanel.remove(PackagePanelSearch);
             MainPackagePanel.setVisible(false);
-            MainPackagePanel.add(UserPanelComplete, BorderLayout.CENTER);
+            MainPackagePanel.add(PackagePanelComplete, BorderLayout.CENTER);
             MainPackagePanel.setVisible(true);
         });
 
         buttonSearch.addActionListener((ActionEvent event) -> {
-            MainPackagePanel.remove(UserPanelAdd);
-            MainPackagePanel.remove(UserPanelDelete);
-            MainPackagePanel.remove(UserPanelComplete);
+            MainPackagePanel.remove(PackagePanelAdd);
+            MainPackagePanel.remove(PackagePanelDelete);
+            MainPackagePanel.remove(PackagePanelComplete);
             MainPackagePanel.setVisible(false);
-            MainPackagePanel.add(UserPanelSearch, BorderLayout.CENTER);
+            MainPackagePanel.add(PackagePanelSearch, BorderLayout.CENTER);
             MainPackagePanel.setVisible(true);
+            model.setRowCount(0);
         });
 
     }
@@ -315,9 +344,9 @@ public class GuiPackagesTab {
         typeOfPackagePanel.add(rdbBox);
         typeOfPackagePanel.add(rdbCrate);
         typeOfPackagePanel.add(rdbDrum);
-        layoutForms.putConstraint(SpringLayout.NORTH, typeOfPackagePanel,20, SpringLayout.NORTH, UserPanelAddAux);
-        layoutForms.putConstraint(SpringLayout.WEST, typeOfPackagePanel, 10, SpringLayout.WEST, UserPanelAddAux);
-        UserPanelAddAux.add(typeOfPackagePanel);
+        layoutForms.putConstraint(SpringLayout.NORTH, typeOfPackagePanel,20, SpringLayout.NORTH, PackagePanelAddAux);
+        layoutForms.putConstraint(SpringLayout.WEST, typeOfPackagePanel, 10, SpringLayout.WEST, PackagePanelAddAux);
+        PackagePanelAddAux.add(typeOfPackagePanel);
 
         setVisibilityBasedOnPackageType(true, false, false, false);
 
@@ -341,119 +370,119 @@ public class GuiPackagesTab {
     private void setUpInputValuesInAddPanel(){
         //Tracking Number
         layoutForms.putConstraint(SpringLayout.SOUTH, lblTrackingNumber,40, SpringLayout.SOUTH, typeOfPackagePanel);
-        layoutForms.putConstraint(SpringLayout.WEST, lblTrackingNumber, 18, SpringLayout.WEST, UserPanelAddAux);
-        UserPanelAddAux.add(lblTrackingNumber);
+        layoutForms.putConstraint(SpringLayout.WEST, lblTrackingNumber, 18, SpringLayout.WEST, PackagePanelAddAux);
+        PackagePanelAddAux.add(lblTrackingNumber);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtTrackingNumber,43, SpringLayout.SOUTH, typeOfPackagePanel);
         layoutForms.putConstraint(SpringLayout.WEST, txtTrackingNumber, 110, SpringLayout.WEST, lblTrackingNumber);
-        UserPanelAddAux.add(txtTrackingNumber);
+        PackagePanelAddAux.add(txtTrackingNumber);
 
 
         //Specification
         layoutForms.putConstraint(SpringLayout.SOUTH, lblSpecification,40, SpringLayout.SOUTH, lblTrackingNumber);
         layoutForms.putConstraint(SpringLayout.EAST, lblSpecification, 0, SpringLayout.EAST, lblTrackingNumber);
-        UserPanelAddAux.add(lblSpecification);
+        PackagePanelAddAux.add(lblSpecification);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, specificationList,44, SpringLayout.SOUTH, lblTrackingNumber);
         layoutForms.putConstraint(SpringLayout.WEST, specificationList, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(specificationList);
+        PackagePanelAddAux.add(specificationList);
 
 
         //Mailing Class:
         layoutForms.putConstraint(SpringLayout.SOUTH, lblMailingClass,40, SpringLayout.SOUTH, lblSpecification);
         layoutForms.putConstraint(SpringLayout.EAST, lblMailingClass, 0, SpringLayout.EAST, lblSpecification);
-        UserPanelAddAux.add(lblMailingClass);
+        PackagePanelAddAux.add(lblMailingClass);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, mailingClassList,44, SpringLayout.SOUTH, lblSpecification);
         layoutForms.putConstraint(SpringLayout.WEST, mailingClassList, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(mailingClassList);
+        PackagePanelAddAux.add(mailingClassList);
 
         //Height
         layoutForms.putConstraint(SpringLayout.SOUTH, lblHeight,40, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.EAST, lblHeight, 0, SpringLayout.EAST, lblMailingClass);
-        UserPanelAddAux.add(lblHeight);
+        PackagePanelAddAux.add(lblHeight);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtHeight,43, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.WEST, txtHeight, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtHeight);
+        PackagePanelAddAux.add(txtHeight);
 
         //Width
         layoutForms.putConstraint(SpringLayout.SOUTH, lblWidth,40, SpringLayout.SOUTH, lblHeight);
         layoutForms.putConstraint(SpringLayout.EAST, lblWidth, 0, SpringLayout.EAST, lblHeight);
-        UserPanelAddAux.add(lblWidth);
+        PackagePanelAddAux.add(lblWidth);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtWidth,43, SpringLayout.SOUTH, lblHeight);
         layoutForms.putConstraint(SpringLayout.WEST, txtWidth, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtWidth);
+        PackagePanelAddAux.add(txtWidth);
 
         // Largest dimension
         layoutForms.putConstraint(SpringLayout.SOUTH, lblLargestDimension,40, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.EAST, lblLargestDimension, 0, SpringLayout.EAST, lblMailingClass);
-        UserPanelAddAux.add(lblLargestDimension);
+        PackagePanelAddAux.add(lblLargestDimension);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtLargestDimension,43, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.WEST, txtLargestDimension, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtLargestDimension);
+        PackagePanelAddAux.add(txtLargestDimension);
 
         //Volume
         layoutForms.putConstraint(SpringLayout.SOUTH, lblVolume,40, SpringLayout.SOUTH, lblLargestDimension);
         layoutForms.putConstraint(SpringLayout.EAST, lblVolume, 0, SpringLayout.EAST, lblLargestDimension);
-        UserPanelAddAux.add(lblVolume);
+        PackagePanelAddAux.add(lblVolume);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtVolume,43, SpringLayout.SOUTH, lblLargestDimension);
         layoutForms.putConstraint(SpringLayout.WEST, txtVolume, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtVolume);
+        PackagePanelAddAux.add(txtVolume);
 
         //Maximum Load
         layoutForms.putConstraint(SpringLayout.SOUTH, lblMaximumLoad,40, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.EAST, lblMaximumLoad, 0, SpringLayout.EAST, lblMailingClass);
-        UserPanelAddAux.add(lblMaximumLoad);
+        PackagePanelAddAux.add(lblMaximumLoad);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtMaximumLoad,43, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.WEST, txtMaximumLoad, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtMaximumLoad);
+        PackagePanelAddAux.add(txtMaximumLoad);
 
         //content
         layoutForms.putConstraint(SpringLayout.SOUTH, lblContent,40, SpringLayout.SOUTH, lblLargestDimension);
         layoutForms.putConstraint(SpringLayout.EAST, lblContent, 0, SpringLayout.EAST, lblLargestDimension);
-        UserPanelAddAux.add(lblContent);
+        PackagePanelAddAux.add(lblContent);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtContent,43, SpringLayout.SOUTH, lblMaximumLoad);
         layoutForms.putConstraint(SpringLayout.WEST, txtContent, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtContent);
+        PackagePanelAddAux.add(txtContent);
 
 
         //Material
         layoutForms.putConstraint(SpringLayout.SOUTH, lblMaterial,40, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.EAST, lblMaterial, 0, SpringLayout.EAST, lblMailingClass);
-        UserPanelAddAux.add(lblMaterial);
+        PackagePanelAddAux.add(lblMaterial);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, materialList,44, SpringLayout.SOUTH, lblMailingClass);
         layoutForms.putConstraint(SpringLayout.WEST, materialList, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(materialList);
+        PackagePanelAddAux.add(materialList);
 
 
         //Diameter
         layoutForms.putConstraint(SpringLayout.SOUTH, lblDiameter,40, SpringLayout.SOUTH, lblMaterial);
         layoutForms.putConstraint(SpringLayout.EAST, lblDiameter, 0, SpringLayout.EAST, lblMaterial);
-        UserPanelAddAux.add(lblDiameter);
+        PackagePanelAddAux.add(lblDiameter);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtDiameter,43, SpringLayout.SOUTH, lblMaterial);
         layoutForms.putConstraint(SpringLayout.WEST, txtDiameter, 0, SpringLayout.WEST, txtTrackingNumber);
-        UserPanelAddAux.add(txtDiameter);
+        PackagePanelAddAux.add(txtDiameter);
     }
 
 
 
     private void setUpDeletePanel(){
         //Tracking Number
-        layoutForms.putConstraint(SpringLayout.NORTH, lblDeleteTrackingNumber,20, SpringLayout.NORTH, UserPanelDeleteAux);
-        layoutForms.putConstraint(SpringLayout.WEST, lblDeleteTrackingNumber, 10, SpringLayout.WEST, UserPanelDeleteAux);
-        UserPanelDeleteAux.add(lblDeleteTrackingNumber);
+        layoutForms.putConstraint(SpringLayout.NORTH, lblDeleteTrackingNumber,20, SpringLayout.NORTH, PackagePanelDeleteAux);
+        layoutForms.putConstraint(SpringLayout.WEST, lblDeleteTrackingNumber, 10, SpringLayout.WEST, PackagePanelDeleteAux);
+        PackagePanelDeleteAux.add(lblDeleteTrackingNumber);
 
         layoutForms.putConstraint(SpringLayout.SOUTH, txtDeleteTrackingNumber,5, SpringLayout.SOUTH, lblDeleteTrackingNumber);
         layoutForms.putConstraint(SpringLayout.WEST, txtDeleteTrackingNumber, 110, SpringLayout.WEST, lblDeleteTrackingNumber);
-        UserPanelDeleteAux.add(txtDeleteTrackingNumber);
+        PackagePanelDeleteAux.add(txtDeleteTrackingNumber);
 
 
         JButton buttonDeleteDatabase = new JButton("Delete From Database");
@@ -461,7 +490,7 @@ public class GuiPackagesTab {
         buttonDeleteDatabase.setFont(buttonFont);
         layoutForms.putConstraint(SpringLayout.SOUTH, buttonDeleteDatabase,65, SpringLayout.SOUTH, lblDeleteTrackingNumber);
         layoutForms.putConstraint(SpringLayout.WEST, buttonDeleteDatabase, 0, SpringLayout.WEST, txtDeleteTrackingNumber);
-        UserPanelDeleteAux.add(buttonDeleteDatabase);
+        PackagePanelDeleteAux.add(buttonDeleteDatabase);
 
 
         buttonDeleteDatabase.addActionListener((ActionEvent event) -> {
@@ -482,5 +511,55 @@ public class GuiPackagesTab {
 
     }
 
+
+
+    private void setUpSearchPanel(){
+
+        //Tracking Number
+        layoutForms.putConstraint(SpringLayout.NORTH, lblSearchTrackingNumber,20, SpringLayout.NORTH, PackagePanelDeleteAux);
+        layoutForms.putConstraint(SpringLayout.WEST, lblSearchTrackingNumber, 10, SpringLayout.WEST, PackagePanelDeleteAux);
+        PackagePanelSearchAux.add(lblSearchTrackingNumber);
+
+        layoutForms.putConstraint(SpringLayout.SOUTH, txtSearchTrackingNumber,5, SpringLayout.SOUTH, lblSearchTrackingNumber);
+        layoutForms.putConstraint(SpringLayout.WEST, txtSearchTrackingNumber, 110, SpringLayout.WEST, lblSearchTrackingNumber);
+        PackagePanelSearchAux.add(txtSearchTrackingNumber);
+
+
+        JButton buttonSearchDatabase = new JButton("Show packages");
+        buttonSearchDatabase.setPreferredSize(new Dimension(170, 50));
+        buttonSearchDatabase.setFont(buttonFont);
+        layoutForms.putConstraint(SpringLayout.SOUTH, buttonSearchDatabase,65, SpringLayout.SOUTH, lblSearchTrackingNumber);
+        layoutForms.putConstraint(SpringLayout.WEST, buttonSearchDatabase, 0, SpringLayout.WEST, txtSearchTrackingNumber);
+        PackagePanelSearchAux.add(buttonSearchDatabase);
+
+
+        //Table to show packages
+        JTable table;
+        model.setDataVector(null,packageColumns);
+        table = new JTable(model);
+        JScrollPane scrollList = new JScrollPane(table);
+        scrollList.setPreferredSize(new Dimension(650, 220));
+        PackagePanelSearchAux.add(scrollList);
+        layoutForms.putConstraint(SpringLayout.NORTH, scrollList,100, SpringLayout.NORTH, lblSearchTrackingNumber);
+        layoutForms.putConstraint(SpringLayout.WEST, scrollList, 5, SpringLayout.WEST, lblSearchTrackingNumber);
+
+
+        buttonSearchDatabase.addActionListener((ActionEvent event) -> {
+
+            if (!ss.packageExists(txtSearchTrackingNumber.getText()) && !txtSearchTrackingNumber.getText().isEmpty() ){
+                JOptionPane.showMessageDialog(MainPackagePanel, "Tracking Number not found");
+                model.setRowCount(0);
+            }
+            else {
+
+                model.setRowCount(0);
+
+                Object[][] data;
+                data = ss.returnPackageDataArray(txtSearchTrackingNumber.getText());
+                model.setDataVector(data,packageColumns);
+
+            }
+        });
+    }
 
 }

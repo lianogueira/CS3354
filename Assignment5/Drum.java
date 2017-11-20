@@ -82,8 +82,8 @@ public class Drum extends Package {
 
     @Override
     public String toString() {
-        return "Envelope{" + "ptn=" + ptn + ", specification=" + specification +
-                ", Mailing Class=" + mailingClass + ", height=" + material +
-                ", volume=" + diameter + '}';
+        return "Drum;" + ptn + ";" + specification +
+                ";" + mailingClass + ";Material=" + material +
+                ";Diameter=" + diameter;
     }
 }

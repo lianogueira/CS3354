@@ -80,8 +80,8 @@ public class Customer extends User {
 
     @Override
     public String toString() {
-        return "Customer{" + "id=" + id + ", firstName=" + firstName 
-                + ", lastName=" + lastName + ", phoneNumber=" + phoneNumber 
-                + ", address=" + address + '}';
+        return "Customer;" + id + ";" + firstName
+                + ";" + lastName + ";" + phoneNumber
+                + ";" + address + "; ; ; ";
     }
 }
