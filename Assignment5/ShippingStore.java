@@ -34,13 +34,14 @@ public class ShippingStore {
     	 fh.setFormatter(formatter);
 
     	 logger.info("a test log");
+    	 logger.warning("IO error");
      } catch(SecurityException ex) {
     	 ex.printStackTrace();
-    	 logger.log(Level.WARNING, "security trouble", ex);
+    	 logger.setLevel(Level.WARNING);
 
      } catch (IOException ex) {
     	 ex.printStackTrace();
-    	 logger.log(Level.WARNING, "output trouble", ex);
+    	 logger.setLevel(Level.WARNING);
      }
 }
 
@@ -114,7 +115,7 @@ public class ShippingStore {
     public void addEnvelope(String ptn, String specification, String mailingClass, int height, int width) {
         Envelope env = new Envelope(ptn, specification, mailingClass, height, width);
         packageList.add(env);
-        logger.log(Level.INFO, "Logging addEnvelope");
+        logger.setLevel(Level.INFO);
     }
 
     /**
@@ -438,10 +439,13 @@ public class ShippingStore {
             input.close();
         } catch (ClassNotFoundException ex) {
             System.err.println(ex.toString());
+            logger.setLevel(Level.WARNING);
         } catch (FileNotFoundException ex) {
             System.err.println("Database file not found.");
+            logger.setLevel(Level.WARNING);
         } catch (IOException ex) {
             System.err.println(ex.toString());
+            logger.setLevel(Level.WARNING);
         } finally {
             close(file);
         }
@@ -474,7 +478,7 @@ public class ShippingStore {
             output.close();
         } catch (IOException ex) {
             System.err.println(ex.toString());
-            logger.log(Level.WARNING, "error", ex);
+            logger.setLevel(Level.WARNING);
         } finally {
             close(file);
         }
