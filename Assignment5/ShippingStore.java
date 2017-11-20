@@ -32,9 +32,10 @@ public class ShippingStore {
     	 fh = new FileHandler("logFile.txt");
     	 SimpleFormatter formatter = new SimpleFormatter();
     	 fh.setFormatter(formatter);
-
-    	 logger.info("a test log");
-    	 logger.warning("IO error");
+    	 logger.setLevel(Level.FINEST);
+    	 logger.log(Level.INFO, "Logging Info");
+    	 //logger.info("a test log");
+    	 //logger.warning("IO error");
      } catch(SecurityException ex) {
     	 ex.printStackTrace();
     	 logger.setLevel(Level.WARNING);
@@ -129,6 +130,7 @@ public class ShippingStore {
     public void addBox(String ptn, String specification, String mailingClass, int dimension, int volume) {
         Box box = new Box(ptn, specification, mailingClass, dimension, volume);
         packageList.add(box);
+        logger.setLevel(Level.INFO);
     }
 
     /**
@@ -142,6 +144,7 @@ public class ShippingStore {
     public void addCrate(String ptn, String specification, String mailingClass, float loadWeight, String content) {
         Crate crate = new Crate(ptn, specification, mailingClass, loadWeight, content);
         packageList.add(crate);
+        logger.setLevel(Level.INFO);
     }
 
     /**
@@ -515,11 +518,14 @@ public class ShippingStore {
         int i = 0;
         int j;
         for (Package p : packageList) {
+        	logger.setLevel(Level.FINER);
+
 
             if (ptn.isEmpty() || ptn.equals(p.getPtn())) {
 
                 j = 0;
                 for (String w : p.toString().split(";", 6)) {
+                	logger.setLevel(Level.FINER);
                     data[i][j] = w;
                     j++;
                 }
@@ -540,9 +546,10 @@ public class ShippingStore {
         int i = 0;
         int j;
         for (User p : users) {
-
+        	logger.setLevel(Level.FINER);
                 j = 0;
                 for (String w : p.toString().split(";", 10)) {
+                	logger.setLevel(Level.FINER);
                     data[i][j] = w;
                     j++;
                 }
