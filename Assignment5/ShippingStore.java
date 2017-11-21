@@ -74,6 +74,7 @@ public class ShippingStore {
      */
     public Package findPackage(String ptn) {
         for (Package p : packageList) {
+            logger.log(Level.FINER, "processing findPackage", packageList.size());
             if (p.getPtn().equals(ptn)) {
                 return p;
             }
@@ -103,7 +104,7 @@ public class ShippingStore {
     public void addEnvelope(String ptn, String specification, String mailingClass, int height, int width) {
         Envelope env = new Envelope(ptn, specification, mailingClass, height, width);
         packageList.add(env);
-        logger.setLevel(Level.INFO);
+        logger.log(Level.INFO, "Envelope Added");
     }
 
     /**
@@ -117,7 +118,7 @@ public class ShippingStore {
     public void addBox(String ptn, String specification, String mailingClass, int dimension, int volume) {
         Box box = new Box(ptn, specification, mailingClass, dimension, volume);
         packageList.add(box);
-        logger.setLevel(Level.INFO);
+         logger.log(Level.INFO, "Box Added");
     }
 
     /**
@@ -131,7 +132,7 @@ public class ShippingStore {
     public void addCrate(String ptn, String specification, String mailingClass, float loadWeight, String content) {
         Crate crate = new Crate(ptn, specification, mailingClass, loadWeight, content);
         packageList.add(crate);
-        logger.setLevel(Level.INFO);
+        logger.log(Level.INFO, "Crate Added");
     }
 
     /**
@@ -145,6 +146,7 @@ public class ShippingStore {
     public void addDrum(String ptn, String specification, String mailingClass, String material, float diameter) {
         Drum drum = new Drum(ptn, specification, mailingClass, material, diameter);
         packageList.add(drum);
+        logger.log(Level.INFO, "Drum Added");
     }
 
 
@@ -157,6 +159,7 @@ public class ShippingStore {
     public boolean deletePackage(String ptn) {
 
         for (Package p : packageList) {
+            logger.log(Level.FINER, "processing delete package", packageList.size());
             if (p.getPtn().equals(ptn)) {
                 packageList.remove(p);
                 return true;
@@ -429,13 +432,13 @@ public class ShippingStore {
             input.close();
         } catch (ClassNotFoundException ex) {
             System.err.println(ex.toString());
-            logger.setLevel(Level.WARNING);
+            logger.log(Level.WARNING,"class not found",ex);
         } catch (FileNotFoundException ex) {
             System.err.println("Database file not found.");
-            logger.setLevel(Level.WARNING);
+            logger.log(Level.WARNING,"file not found",ex);
         } catch (IOException ex) {
             System.err.println(ex.toString());
-            logger.setLevel(Level.WARNING);
+            logger.log(Level.WARNING,"IO trouble",ex);
         } finally {
             close(file);
         }
@@ -468,7 +471,7 @@ public class ShippingStore {
             output.close();
         } catch (IOException ex) {
             System.err.println(ex.toString());
-            logger.setLevel(Level.WARNING);
+            logger.log(Level.WARNING,"IO trouble",ex);
         } finally {
             close(file);
         }
@@ -511,14 +514,14 @@ public class ShippingStore {
         int i = 0;
         int j;
         for (Package p : packageList) {
-        	logger.setLevel(Level.FINER);
 
+          logger.log(Level.FINER, "processing deletePackageDataArray", packageList.size());
 
             if (ptn.isEmpty() || ptn.equals(p.getPtn())) {
 
                 j = 0;
                 for (String w : p.toString().split(";", 6)) {
-                	logger.setLevel(Level.FINER);
+                	logger.log(Level.FINER, "processing[{0}]:{6}" );
                     data[i][j] = w;
                     j++;
                 }
@@ -545,10 +548,10 @@ public class ShippingStore {
         int i = 0;
         int j;
         for (User p : users) {
-        	logger.setLevel(Level.FINER);
+        	logger.log(Level.FINER, "processing returnsUserDataArray", users.size());
                 j = 0;
                 for (String w : p.toString().split(";", 10)) {
-                	logger.setLevel(Level.FINER);
+                	logger.log(Level.FINER, "processing[{0}]:{10}" );
                     data[i][j] = w;
                     j++;
                 }
@@ -573,9 +576,10 @@ public class ShippingStore {
         int i = 0;
         int j;
         for (Transaction p : transactions) {
-
+            logger.log(Level.FINER, "processing returnsTransactionsDataArray", transactions.size());
             j = 0;
             for (String w : p.toString().split(";", 10)) {
+              logger.log(Level.FINER, "processing[{0}]:{10}" );
                 data[i][j] = w;
                 j++;
             }

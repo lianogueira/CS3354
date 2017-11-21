@@ -46,8 +46,10 @@ public class MainApp {
             logger.log(Level.INFO, "Initiating Logging");
         } catch(SecurityException ex) {
             ex.printStackTrace();
+            logger.log(Level.WARNING,"security trouble",ex);
         } catch (IOException ex) {
             ex.printStackTrace();
+            logger.log(Level.WARNING,"IO trouble",ex);
         }
 
         //Initializing ShippingStore

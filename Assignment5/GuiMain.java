@@ -18,13 +18,13 @@ import java.util.logging.*;
 public class GuiMain {
 
 	private ShippingStore ss = new ShippingStore();
-	
+
 	/**
     * Class Constructor
 	* Calls function to initialize GUI configuration
     */
     public GuiMain(ShippingStore ss, Logger logger) {
-	
+
         initGui(ss, logger);
     }
 
@@ -42,14 +42,14 @@ public class GuiMain {
         JMenu file = new JMenu("Menu");
         JMenuItem eMenuItem;
         eMenuItem = new JMenuItem("Exit");
-        eMenuItem.setToolTipText("Exit program");		
+        eMenuItem.setToolTipText("Exit program");
 		//Write to file on window closing
 		eMenuItem.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e){		
-				write();				
-				System.exit(0); 				
+			public void actionPerformed(ActionEvent e){
+				write();
+				System.exit(0);
 			}
-		});				
+		});
         file.add(eMenuItem);
         menubar.add(file);
         f.setJMenuBar(menubar);
@@ -64,7 +64,7 @@ public class GuiMain {
         tabs.add("Users",MainUserPanel);
         f.add(tabs);
 
-		
+
         //Creating gui for packages tab
         try {
             GuiPackagesTab packagesGui = new GuiPackagesTab(ss, MainPackagePanel, logger);
@@ -98,8 +98,8 @@ public class GuiMain {
         f.setVisible(true);
 
     }
-	
-	
+
+
 	/**
     * Method used to call ShippingStore object to add data to database
 	* This function will called on system exit
