@@ -319,7 +319,7 @@ public class GuiPackagesTab {
             else {
 			
                 if (rdbEnvelope.isSelected()) {
-                    ss.addEnvelope(txtTrackingNumber.getText(), specificationList.getSelectedItem().toString().replace(" ", ""), mailingClassList.getSelectedItem().toString().replace(" ", ""), Integer.parseInt(txtHeight.getText()), Integer.parseInt(txtHeight.getText()));
+                    ss.addEnvelope(txtTrackingNumber.getText(), specificationList.getSelectedItem().toString().replace(" ", ""), mailingClassList.getSelectedItem().toString().replace(" ", ""), Integer.parseInt(txtHeight.getText()), Integer.parseInt(txtWidth.getText()));
                 } else if (rdbBox.isSelected()) {
                     ss.addBox(txtTrackingNumber.getText(), specificationList.getSelectedItem().toString().replace(" ", ""), mailingClassList.getSelectedItem().toString().replace(" ", ""), Integer.parseInt(txtLargestDimension.getText()), Integer.parseInt(txtVolume.getText()));
                 } else if (rdbCrate.isSelected()) {
