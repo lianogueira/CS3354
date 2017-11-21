@@ -138,8 +138,8 @@ public class Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return "Transaction{" + "customerId=" + customerId + ", employeeId="
-                + employeeId + ", ptn=" + ptn + ", shippingDate=" + shippingDate
-                + ", deliveryDate=" + deliveryDate + ", price=" + price + '}';
+        return "" + "" + customerId + ";"
+                + employeeId + ";" + ptn + ";" + shippingDate
+                + ";" + deliveryDate + ";" + price;
     }
 }

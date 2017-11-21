@@ -2,49 +2,23 @@ package shippingstore;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  * This class represents a car dealership software, providing some basic
  * operations.
  *
- * @author Junye Wen
+ * @author Junye Wen (*Modified by Tyler Hooks and Lia Nogueira de Moura)
  */
 public class ShippingStore {
 
     private final List<Package> packageList;
     private final List<User> users;
     private final List<Transaction> transactions;
-
+    private Logger logger = Logger.getLogger(ShippingStore.class.getName());
     private int userIdCounter = 1;
 
-
-   	private static final Logger logger = Logger.getLogger(ShippingStore.class.getName());
-    static FileHandler fh;
-
-    public static void main(String[] args) {
-     Logger logger = Logger.getLogger("My Log");
-     try {
-
-    	 fh = new FileHandler("logFile.txt");
-    	 SimpleFormatter formatter = new SimpleFormatter();
-    	 fh.setFormatter(formatter);
-    	 logger.setLevel(Level.FINEST);
-    	 logger.log(Level.INFO, "Logging Info");
-    	 //logger.info("a test log");
-    	 //logger.warning("IO error");
-     } catch(SecurityException ex) {
-    	 ex.printStackTrace();
-    	 logger.setLevel(Level.WARNING);
-
-     } catch (IOException ex) {
-    	 ex.printStackTrace();
-    	 logger.setLevel(Level.WARNING);
-     }
-}
 
     /**
      * Default constructor. Initializes the inventory, users, and transactions
@@ -54,25 +28,38 @@ public class ShippingStore {
         this.packageList = new ArrayList<Package>();
         this.users = new ArrayList<User>();
         this.transactions = new ArrayList<Transaction>();
+
     }
 
     /**
-     * Constructor. Initializes the package list, users, and transactions to
+     * Default constructor. Initializes the inventory, users, transactions and logger
+     * tables.
+     */
+    public ShippingStore(Logger logger) {
+        this.packageList = new ArrayList<Package>();
+        this.users = new ArrayList<User>();
+        this.transactions = new ArrayList<Transaction>();
+        this.logger = logger;
+    }
+
+    /**
+     * Constructor. Initializes the package list, users, transactions and logger to
      * given values.
      *
      * @param packageList List of packages
      * @param users List of Users
      * @param transactions List of Transactions
      */
-    public ShippingStore(List<Package> packageList, List<User> users, List<Transaction> transactions) {
+    public ShippingStore(List<Package> packageList, List<User> users, List<Transaction> transactions, Logger logger) {
         this.packageList = packageList;
         this.users = users;
         this.transactions = transactions;
+        this.logger = logger;
     }
 
     /**
      *
-     * @param Counter
+     * @param Counter Counter
      */
     public void setUserIdCounter(int Counter) {
         this.userIdCounter = Counter;
@@ -82,7 +69,7 @@ public class ShippingStore {
      * Auxiliary method used to find a package in the database, given its
      * tracking number.
      *
-     * @param ptn
+     * @param ptn TrackingNumber
      * @return The package found, or otherwise null.
      */
     public Package findPackage(String ptn) {
@@ -96,7 +83,7 @@ public class ShippingStore {
 
     /**
      * Returns true if the package exists in the database.
-     * @param ptn
+     * @param ptn Tracking Number
      * @return
      */
     public boolean packageExists(String ptn) {
@@ -107,7 +94,7 @@ public class ShippingStore {
 
     /**
      *
-     * @param ptn
+     * @param ptn Tracking Number
      * @param specification
      * @param mailingClass
      * @param height
@@ -411,7 +398,7 @@ public class ShippingStore {
      */
     @SuppressWarnings("unchecked") // This will prevent Java unchecked operation warning when
     // convering from serialized Object to Arraylist<>
-    public static ShippingStore readDatabase() {
+    public static ShippingStore readDatabase(Logger logger) {
         System.out.print("Reading database...");
 
         File dataFile = new File("ShippingStore.ser");
@@ -425,7 +412,7 @@ public class ShippingStore {
         try {
             if (!dataFile.exists()) {
                 System.out.println("Data file does not exist. Creating a new database.");
-                ss = new ShippingStore();
+                ss = new ShippingStore(logger);
                 return ss;
             }
             file = new FileInputStream(dataFile);
@@ -436,7 +423,7 @@ public class ShippingStore {
             List<Package> packageList = (ArrayList<Package>) input.readObject();
             List<User> users = (ArrayList<User>) input.readObject();
             List<Transaction> transactions = (ArrayList<Transaction>) input.readObject();
-            ss = new ShippingStore(packageList, users, transactions);
+            ss = new ShippingStore(packageList, users, transactions, logger);
             ss.userIdCounter = input.readInt();
 
             input.close();
@@ -489,6 +476,7 @@ public class ShippingStore {
         System.out.println("Done.");
     }
 
+
     /**
      * Auxiliary convenience method used to close a file and handle possible
      * exceptions that may occur.
@@ -503,13 +491,18 @@ public class ShippingStore {
             c.close();
         } catch (IOException ex) {
             System.err.println(ex.toString());
-            logger.log(Level.WARNING, "error", ex);
         }
     }
 
 
 
 
+    /**
+     * Return 2D array with all Package data
+     * This will be used to show the data in a table in the user interface
+     * @param ptn If parameter not empty, returns only packages with the given Tracking Number
+     * @return 2D Array of Package data
+     */
     public Object[][] returnPackageDataArray(String ptn) {
 
 
@@ -539,6 +532,12 @@ public class ShippingStore {
     }
 
 
+
+    /**
+     * Return 2D array with all User data
+     * This will be used to show the data in a table in the user interface
+     * @return 2D Array of User data
+     */
     public Object[][] returnUserDataArray() {
 
         Object[][] data = new Object[users.size()][10];
@@ -558,6 +557,32 @@ public class ShippingStore {
 
         return data;
 
+    }
+
+
+
+    /**
+     * Return 2D array with all Completed Transactions data
+     * This will be used to show the data in a table in the user interface
+     * @return 2D Array of Completed Transactions data
+     */
+    public Object[][] returnTransactionsDataArray() {
+
+        Object[][] data = new Object[transactions.size()][10];
+
+        int i = 0;
+        int j;
+        for (Transaction p : transactions) {
+
+            j = 0;
+            for (String w : p.toString().split(";", 10)) {
+                data[i][j] = w;
+                j++;
+            }
+            i++;
+        }
+
+        return data;
     }
 
 
